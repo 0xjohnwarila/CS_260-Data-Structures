@@ -16,10 +16,14 @@ void Bag::shuffle(void) {
 }
 
 void Bag::printAll(void) {
-  // For each marble in marbles, print the marble's data
-  for (auto currentMarble : marbles) {
-    std::cout << "Marble color " << currentMarble.color() << ". "
-              << "Marble pattern " << currentMarble.pattern() << "." << std::endl;
+  if (marbleCount() > 0) {
+    // For each marble in marbles, print the marble's data
+    for (auto currentMarble : marbles) {
+      std::cout << "Marble color " << currentMarble.color() << ". "
+                << "Marble pattern " << currentMarble.pattern() << "." << std::endl;
+    }
+  } else {
+    std::cout << "The bag is empty." << std::endl;
   }
 }
 
