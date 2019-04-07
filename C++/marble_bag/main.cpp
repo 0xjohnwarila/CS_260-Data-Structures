@@ -34,7 +34,7 @@ bool testBagAddMarble(Marble testMarble) {
 
 bool testBagMarbleCount(int marbleNum) {
   Bag testBag = Bag();
-  for (int i = 0; i < marbleNum + 1; i++) {
+  for (int i = 0; i < marbleNum; i++) {
     Marble newMarble = Marble();
     testBag.addMarble(newMarble);
   }
@@ -42,5 +42,14 @@ bool testBagMarbleCount(int marbleNum) {
 }
 
 int main() {
+  Marble testMarble = Marble("RED", "SWIRL");
+  // The values here don't really matter. The console should output all 1's if
+  // everything has gone correctly.
+  std::cout << testMarbleColor("RED") << std::endl
+            << testMarblePattern("SWIRL") << std::endl
+            << testMarbleSetColor("RED") << std::endl
+            << testMarbleSetPattern("SWIRL") << std::endl
+            << testBagAddMarble(testMarble) << std::endl
+            << testBagMarbleCount(64) << std::endl;
   return EXIT_SUCCESS;
 }
