@@ -43,6 +43,7 @@ int Bag::marbleCount(void) {
 Marble Bag::getMarble(void) {
   // Get a random marble out of the bag. If there are no marbles in the bag, return
   // an empty marble.
+
   Marble returnMarble;
   if (marbles.empty()) {
     returnMarble = Marble();
@@ -51,5 +52,4 @@ Marble Bag::getMarble(void) {
     returnMarble = marbles.back();
     marbles.pop_back();
   }
-  return returnMarble;
 }
