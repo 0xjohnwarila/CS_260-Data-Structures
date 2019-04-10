@@ -32,6 +32,6 @@
 *.app
 
 main
-.vscode/
+.vscode/*
 .vscode/ipch/e4444fcd99d2af24/main.ipch
 
