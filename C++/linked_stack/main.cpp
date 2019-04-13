@@ -22,6 +22,12 @@ int main() {
   Stack<int> newIntStack;
   newIntStack.push(5);
   std::cout << newIntStack.peek() << std::endl;
+  newIntStack.push(42);
+  std::cout << "stack size is " << newIntStack.size() << std::endl;
+  int answer = newIntStack.get();
+  std::cout << "answer is " << answer << std::endl;
+  std::cout << "stack size is " << newIntStack.size() << std::endl;
+  std::cout << newIntStack.peek() << std::endl;
   newIntStack.pop();
   std::cout << newIntStack.peek() << std::endl;
   return EXIT_SUCCESS;

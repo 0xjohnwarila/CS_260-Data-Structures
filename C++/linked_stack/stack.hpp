@@ -1,3 +1,22 @@
+/*
+Stack ADT
+
+This ADT is a LIFO (Last In First Out) structure. As
+you add an item to the 'Stack' you put it ont the 'top'
+of the other items. To retrieve and item you can either
+'peek' (in the case of this implementation) or 'pop'.
+
+Pop will delete the top item, and in some stacks also
+return the value of that item.
+
+Peek returns the value of the top item without deleting
+it.
+
+Note: In this stack the method 'get' has been added. The
+get method deletes the top node and returns its value, this
+mimics pop in some other stacks.
+*/
+
 #pragma once
 
 template <typename T>
@@ -9,10 +28,10 @@ class Stack {
     The node struct is stored inside of the stack class
     in this implementation. The reasoning behind this is
     to make a stack that only holds one type of data, but
-    is also templated.
-
-    For a stack that can hold multiple data types, please
-    see the second implementation.
+    is also templated. Another reason is that having the
+    node be a private member hides implementation from
+    those who do not care and only wish to put values into
+    the stack and take them out again.
 
     The node structure is quite basic, storing a templated
     value, and a pointer to the next node.
@@ -53,11 +72,12 @@ class Stack {
   /*
   PUBLIC METHOD: void pop(void)
   
-    Deletes the top value in the stack, and points to new
+    Deletes the top node in the stack, and points to new
     top. Pop can be run on an empty stack (nothing will be done).
 
     Note: In this stack pop does not return the value of
-    top, please run peek to get value before popping.
+    top, please run peek to get value before popping or use
+    get method.
   */
   void pop(void) {
     if (head->nextNode == nullptr) {
@@ -67,6 +87,24 @@ class Stack {
       head = head->nextNode;
       delete temp;
       stackSize--;
+    }
+  }
+
+  /*
+  PUBLIC METHOD: T get(void)
+
+    Deletes the top node and returns the value.
+  */
+  T get(void) {
+    if (head->nextNode == nullptr) {
+      return head->value;
+    } else {
+      Node *temp = head;
+      T topVal = temp->value;
+      head = head->nextNode;
+      delete temp;
+      stackSize--;
+      return topVal;
     }
   }
 
