@@ -2,6 +2,7 @@
 #include "stack.hpp"
 
 int main() {
+  // TODO : Make testing function for all this.
   Stack<std::string> newStringStack;
   newStringStack.push("test1");
   std::cout << newStringStack.peek() << std::endl;

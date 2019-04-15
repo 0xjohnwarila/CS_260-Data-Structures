@@ -19,7 +19,7 @@ mimics pop in some other stacks.
 
 #pragma once
 
-template <typename T>
+template <class T>
 class Stack {
  private:
   /*
