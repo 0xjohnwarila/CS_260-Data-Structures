@@ -37,6 +37,9 @@ class LinkedList {
   Basically just some operator definitions, pretty basic stuff that makes life
   a lot easier.
 
+  Note: This implementation of an iterator comes from a linked list I wrote about
+  a year ago. It wasn't part of the assignment so I felt OK about putting it in.
+  Mostly just a quality of life feature.
   */
   class Iterator {
    private:
@@ -74,32 +77,16 @@ class LinkedList {
   LinkedList() : head(new Node()) {}
 
   // Public methods
-  void add(T inVal, int pos);
-  void append(T inVal);
+  void insert(T inVal, int pos);
   void insert(T inVal);
+  void append(T inVal);
+
   T get(int pos);
 
   // Iterator stuff (aka the begin and end methods needed...)
   Iterator begin() { return Iterator(head->next); }
   Iterator end() { return Iterator(head); }
 };
-
-/*
-PUBLIC METHOD: add(T inVal, int pos)
-
-Traces through the list until it reaches pos, then inserts the
-new node.
-
-COMPLEXITY: O(n)
-*/
-template <class T>
-void LinkedList<T>::add(T inVal, int pos) {
-  Node *currentNode = head;
-  for (int i = 0; i < pos + 1; i++) {
-    currentNode = currentNode->next;
-  }
-  (new Node(inVal))->insert(currentNode);
-}
 
 /*
 PUBLIC METHOD: append(T inVal)
@@ -133,9 +120,29 @@ T LinkedList<T>::get(int pos) {
 PUBLIC METHOD: insert(T inVal)
 
 Adds new node to the front of the list.
+
 COMPLEXITY: O(1)
 */
 template <class T>
 void LinkedList<T>::insert(T inVal) {
   (new Node(inVal))->insert(head->next);
+}
+
+/*
+PUBLIC METHOD: insert(T inVal, int pos)
+
+Overloaded method for inserting at a specific location.
+
+Traces through the list until it reaches pos, then inserts the
+new node.
+
+COMPLEXITY: O(n)
+*/
+template <class T>
+void LinkedList<T>::insert(T inVal, int pos) {
+  Node *currentNode = head;
+  for (int i = 0; i < pos + 1; i++) {
+    currentNode = currentNode->next;
+  }
+  (new Node(inVal))->insert(currentNode);
 }

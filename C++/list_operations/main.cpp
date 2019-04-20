@@ -6,12 +6,10 @@
 
 int main() {
   LinkedList<int> intList;
-  std::cout << "made list" << std::endl;
   intList.append(2);
   intList.insert(88);
   intList.append(9);
-  std::cout << "appended values" << std::endl;
-  intList.add(3, 1);
+  intList.insert(3, 1);
 
   for (auto v : intList)
     std::cout << v << std::endl;
