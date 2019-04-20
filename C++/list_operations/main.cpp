@@ -14,6 +14,11 @@ int main() {
   for (auto v : intList)
     std::cout << v << std::endl;
 
+  std::cout << intList.remove(1) << std::endl;
+
+  for (auto v : intList)
+    std::cout << v << std::endl;
+
   std::cout << "Array Testing" << std::endl;
   ArrayList<int> intArr;
   int testArr[4] = {1, 2, 3, 4};

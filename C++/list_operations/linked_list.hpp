@@ -28,6 +28,12 @@ class LinkedList {
       prev = other->prev;
       next->prev = prev->next = this;
     }
+
+    void remove(void) {
+      // remove self from list
+      next->prev = prev;
+      prev->next = next;
+    }
   };
 
   /*
@@ -70,6 +76,15 @@ class LinkedList {
     }
   };
 
+  // Traces through the list. COMPLEXITY O(n)
+  Node *trace(int pos) {
+    Node *currentNode = head;
+    for (int i = 0; i < pos + 1; i++) {
+      currentNode = currentNode->next;
+    }
+    return currentNode;
+  }
+
   Node *head;
 
  public:
@@ -82,6 +97,7 @@ class LinkedList {
   void append(T inVal);
 
   T get(int pos);
+  T remove(int pos);
 
   // Iterator stuff (aka the begin and end methods needed...)
   Iterator begin() { return Iterator(head->next); }
@@ -109,11 +125,24 @@ COMPLEXITY: O(n)
 */
 template <class T>
 T LinkedList<T>::get(int pos) {
-  Node *currentNode = head;
-  for (int i = 0; i < pos + 1; i++) {
-    currentNode = currentNode->next;
-  }
-  return currentNode->value;
+  return trace(pos)->value;
+}
+
+/*
+PUBLIC METHOD: remove(int pos)
+
+Stores the node at pos, has the node remove itself from the list.
+Then stores the value, deletes the node, and returns the value.
+
+COMPLEXITY: O(n)
+*/
+template <class T>
+T LinkedList<T>::remove(int pos) {
+  Node *temp = trace(pos);
+  T tempVal = temp->value;
+  temp->remove();
+  delete temp;
+  return tempVal;
 }
 
 /*
@@ -140,9 +169,5 @@ COMPLEXITY: O(n)
 */
 template <class T>
 void LinkedList<T>::insert(T inVal, int pos) {
-  Node *currentNode = head;
-  for (int i = 0; i < pos + 1; i++) {
-    currentNode = currentNode->next;
-  }
-  (new Node(inVal))->insert(currentNode);
+  (new Node(inVal))->insert(trace(pos));
 }
