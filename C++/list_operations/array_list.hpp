@@ -11,7 +11,7 @@ class ArrayList {
   bool empty(void);
 
  public:
-  ArrayList(){};
+  ArrayList();
   void add(T inVal, int inPos);
   void fill(T inArr[], int length);
   T remove(int pos);
@@ -20,9 +20,16 @@ class ArrayList {
 };
 
 template <class T>
+ArrayList<T>::ArrayList() {
+  arrList = new (std::nothrow) T[0];
+  if (arrList == nullptr) {
+    std::cout << "Mem allocation error" << std::endl;
+  }
+}
+
+template <class T>
 void ArrayList<T>::add(T inVal, int inPos) {
   if (inPos > arrLength) {
-    // This is probably terribly inefficient, but its a start
     T *tempArr = new (std::nothrow) T[inPos + 1];
     if (tempArr == nullptr) {
       std::cout << "Mem allocation error" << std::endl;
@@ -32,7 +39,8 @@ void ArrayList<T>::add(T inVal, int inPos) {
       tempArr[i] = arrList[i];
     }
     tempArr[inPos] = inVal;
-    fill(tempArr, inPos + 1);
+    delete arrList;
+    arrList = tempArr;
     delete tempArr;
   } else {
     arrList[inPos] = inVal;

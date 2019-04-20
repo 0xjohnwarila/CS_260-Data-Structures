@@ -8,16 +8,13 @@ int main() {
   LinkedList<int> intList;
   std::cout << "made list" << std::endl;
   intList.append(2);
+  intList.insert(88);
   intList.append(9);
   std::cout << "appended values" << std::endl;
   intList.add(3, 1);
-  for (auto &&i : intList) {
-    std::cout << i << std::endl;
-  }
 
-  for (int i = 0; i < 3; i++) {
-    std::cout << intList.get(i) << std::endl;
-  }
+  for (auto v : intList)
+    std::cout << v << std::endl;
 
   std::cout << "Array Testing" << std::endl;
   ArrayList<int> intArr;
