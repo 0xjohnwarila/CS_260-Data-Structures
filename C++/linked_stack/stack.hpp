@@ -78,6 +78,8 @@ class Stack {
     Note: In this stack pop does not return the value of
     top, please run peek to get value before popping or use
     get method.
+
+    Complexity O(1)
   */
   void pop(void) {
     if (head->nextNode == nullptr) {
@@ -94,6 +96,8 @@ class Stack {
   PUBLIC METHOD: T get(void)
 
     Deletes the top node and returns the value.
+
+    Complexity O(1)
   */
   T get(void) {
     if (head->nextNode == nullptr) {
@@ -115,6 +119,8 @@ class Stack {
 
     Note: In this stack please use the same data type
     for all nodes.
+
+    Complexity O(1)
   */
   void push(T inVal) {
     Node *inputNode = new Node(inVal, head);
@@ -129,6 +135,8 @@ class Stack {
     If the stack is empty, peek will return 0, an empty string, 
     or similar null value. Please run the size method before
     peeking to ensure valid data.
+
+    Complexity O(1)
   */
   T peek(void) {
     return head->value;
@@ -141,6 +149,8 @@ class Stack {
     pop methods.
 
     Note: Not actually needed for pop, but is a good practice.
+
+    Complexity O(1)
   */
   int size(void) {
     return stackSize;

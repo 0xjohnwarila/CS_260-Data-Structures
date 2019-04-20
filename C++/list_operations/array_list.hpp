@@ -16,6 +16,7 @@ class ArrayList {
   void fill(T inArr[], int length);
   T remove(int pos);
   T get(int pos);
+  T take(int pos);
 };
 
 template <class T>
@@ -32,6 +33,7 @@ void ArrayList<T>::add(T inVal, int inPos) {
     }
     tempArr[inPos] = inVal;
     fill(tempArr, inPos + 1);
+    delete tempArr;
   } else {
     arrList[inPos] = inVal;
   }
@@ -52,4 +54,11 @@ void ArrayList<T>::fill(T inArr[], int length) {
 template <class T>
 T ArrayList<T>::get(int pos) {
   return arrList[pos];
+}
+
+template <class T>
+T ArrayList<T>::take(int pos) {
+  T temp = arrList[pos];
+  arrList[pos] = 0;
+  return temp;
 }

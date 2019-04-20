@@ -11,6 +11,9 @@ int main() {
   intList.append(9);
   std::cout << "appended values" << std::endl;
   intList.add(3, 1);
+  for (auto &&i : intList) {
+    std::cout << i << std::endl;
+  }
 
   for (int i = 0; i < 3; i++) {
     std::cout << intList.get(i) << std::endl;
@@ -25,5 +28,6 @@ int main() {
   std::cout << "0 = " << intArr.get(0) << std::endl;
   intArr.add(99, 8);
   std::cout << "8 = " << intArr.get(8) << std::endl;
+  std::cout << "7 = " << intArr.get(7) << std::endl;
   return EXIT_SUCCESS;
 }
