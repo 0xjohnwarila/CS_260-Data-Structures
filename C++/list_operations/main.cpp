@@ -10,14 +10,20 @@ int main() {
   intList.insert(88);
   intList.append(9);
   intList.insert(3, 1);
+  intList.insert(55, 90);
+  intList.insert(33, 33);
+  intList.insert(777, 5);
 
   for (auto v : intList)
     std::cout << v << std::endl;
 
-  std::cout << intList.remove(1) << std::endl;
+  std::cout << std::endl;
+  std::cout << intList.remove(1) << " was removed from pos 1" << std::endl
+            << std::endl;
 
   for (auto v : intList)
-    std::cout << v << std::endl;
+    std::cout << v << std::endl
+              << std::endl;
 
   std::cout << "Array Testing" << std::endl;
   ArrayList<int> intArr;

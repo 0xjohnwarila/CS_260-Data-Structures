@@ -1,3 +1,24 @@
+/*
+This ADT is a linked list, more specifically this is a doubly linked list as the nodes have
+next AND previous node pointers.
+
+You are able to perform a series of actions on the linked list.
+
+Insert: If you do not specify a position for the new value to be inserted, it will be placed at the
+start of the list by default. If you provide a position that is larger than the size of the list,
+the list will place the value at the end of the list. 
+If, however, you provide a valid position, the new value will be inserted at that position. The list
+is 0 indexed.
+
+Append: If you want to add a new value to the end of the list you can append it with... append! No
+need to specify a postion, there is only one end of this list.
+
+Get: If you want to get the value of a node, but do not want to delete it from the list, you can
+just get it.
+
+Remove: If you want to get the value and also remove the node from the list, you can call remove
+with a postion.
+*/
 #pragma once
 
 template <class T>
@@ -78,6 +99,9 @@ class LinkedList {
 
   // Traces through the list. COMPLEXITY O(n)
   Node *trace(int pos) {
+    if (pos > listLength - 1)
+      return head;
+
     Node *currentNode = head;
     for (int i = 0; i < pos + 1; i++) {
       currentNode = currentNode->next;
@@ -86,10 +110,11 @@ class LinkedList {
   }
 
   Node *head;
+  size_t listLength;
 
  public:
   // Constructor
-  LinkedList() : head(new Node()) {}
+  LinkedList() : head(new Node()), listLength(0) {}
 
   // Public methods
   void insert(T inVal, int pos);
@@ -114,6 +139,7 @@ COMPLEXITY: O(1)
 template <class T>
 void LinkedList<T>::append(T inVal) {
   (new Node(inVal))->insert(head);
+  listLength++;
 }
 
 /*
@@ -142,6 +168,7 @@ T LinkedList<T>::remove(int pos) {
   T tempVal = temp->value;
   temp->remove();
   delete temp;
+  listLength--;
   return tempVal;
 }
 
@@ -155,6 +182,7 @@ COMPLEXITY: O(1)
 template <class T>
 void LinkedList<T>::insert(T inVal) {
   (new Node(inVal))->insert(head->next);
+  listLength++;
 }
 
 /*
@@ -170,4 +198,5 @@ COMPLEXITY: O(n)
 template <class T>
 void LinkedList<T>::insert(T inVal, int pos) {
   (new Node(inVal))->insert(trace(pos));
+  listLength++;
 }

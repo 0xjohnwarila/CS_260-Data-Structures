@@ -42,6 +42,8 @@ void ArrayList<T>::add(T inVal, int inPos) {
     delete arrList;
     arrList = tempArr;
     delete tempArr;
+  } else if (inPos == arrLength - 1) {
+    T *tempArr = new (std::nothrow) T[inPos + 1];
   } else {
     arrList[inPos] = inVal;
   }
@@ -50,6 +52,7 @@ void ArrayList<T>::add(T inVal, int inPos) {
 template <class T>
 void ArrayList<T>::fill(T inArr[], int length) {
   arrList = new (std::nothrow) T[length];
+  arrLength = length;
   if (arrList == nullptr) {
     std::cout << "Mem allocation error" << std::endl;
     return;
