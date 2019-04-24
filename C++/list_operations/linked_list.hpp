@@ -76,20 +76,16 @@ class LinkedList {
     Iterator(const Iterator &i) : current(i.current) {}
     Iterator(Node *n) : current(n) {}
 
-    // Equivalency operators. Take a reference to another iterator, and check the currents
     bool operator==(const Iterator &i) { return current == i.current; }
     bool operator!=(const Iterator &i) { return current != i.current; }
 
-    // Get the value of current
     T &operator*() { return current->value; }
 
-    // Iterate!
     Iterator &operator++() {
       current = current->next;
       return *this;
     }
 
-    // Yay for operator overloading!
     Iterator operator++(int) {
       Iterator clone(this);
       current = current->next;
@@ -110,7 +106,7 @@ class LinkedList {
   }
 
   Node *head;
-  size_t listLength;
+  int listLength;
 
  public:
   // Constructor
