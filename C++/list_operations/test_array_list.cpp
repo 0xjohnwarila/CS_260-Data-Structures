@@ -32,7 +32,7 @@ bool addTest(void) {
 }
 
 bool removeTest(void) {
-  return true;
+  return false;
 }
 
 bool atTest(void) {
