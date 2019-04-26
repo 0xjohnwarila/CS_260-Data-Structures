@@ -22,23 +22,83 @@ bool addTest(void) {
     returnData[i] = newArray.at(i);
     std::cout << "Got back " << returnData[i] << std::endl;
   }
+  std::cout << std::endl;
   if (returnData == testData) {
-    std::cout << "Add Test Passed" << std::endl;
+    std::cout << "Add Test Passed" << std::endl
+              << std::endl;
     return true;
   } else {
-    std::cout << "Add Test Failed" << std::endl;
+    std::cout << "Add Test Failed" << std::endl
+              << std::endl;
     return false;
   }
 }
 
 bool removeTest(void) {
-  return false;
+  std::cout << "*** Remove Test ***" << std::endl
+            << std::endl;
+  ArrayList<int> newArray;
+  std::array<int, 5> testData = {15, 2, 32, 45, 51};
+  std::array<int, 5> expectedData = {15, 2, 32, 0, 51};
+  std::array<int, 5> returnData = {};
+  for (int i = 0; i < 5; i++) {
+    std::cout << "Adding " << testData[i] << ". " << std::endl;
+    newArray.add(testData[i], i);
+  }
+  std::cout << std::endl
+            << "Removing " << testData[3] << " from pos 3" << std::endl;
+  newArray.remove(3);
+  std::cout << "Data is now: ";
+  for (int i = 0; i < 5; i++) {
+    std::cout << newArray.at(i) << " ";
+    returnData[i] = newArray.at(i);
+  }
+  std::cout << std::endl
+            << std::endl;
+
+  if (returnData == expectedData) {
+    std::cout << "Remove Test Passed" << std::endl
+              << std::endl;
+    return true;
+  } else {
+    std::cout << "Remove Test Failed" << std::endl
+              << std::endl;
+    return false;
+  }
 }
 
-bool atTest(void) {
-  return true;
+bool fillTest(void) {
+  std::cout << "*** Fill Test ***" << std::endl
+            << std::endl;
+  ArrayList<int> newArray;
+  int testData[] = {15, 2, 32, 45, 51};
+  std::cout << "Filling with array: { ";
+  for (int i = 0; i < 5; i++) {
+    std::cout << testData[i] << ", ";
+  }
+  std::cout << "}" << std::endl;
+  std::array<int, 5> expectedData = {15, 2, 32, 45, 51};
+  std::array<int, 5> returnData = {};
+  newArray.fill(testData, 5);
+  std::cout << "Array stored : { ";
+  for (int i = 0; i < 5; i++) {
+    std::cout << newArray.at(i) << ", ";
+    returnData[i] = newArray.at(i);
+  }
+  std::cout << "}" << std::endl
+            << std::endl;
+
+  if (returnData == expectedData) {
+    std::cout << "Fill Test Passed" << std::endl
+              << std::endl;
+    return true;
+  } else {
+    std::cout << "Fill Test Failed" << std::endl
+              << std::endl;
+    return false;
+  }
 }
 
 bool array_list_TestSuite(void) {
-  return (addTest() && removeTest() && atTest());
+  return (addTest() && removeTest() && fillTest());
 }

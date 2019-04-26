@@ -18,7 +18,6 @@ class ArrayList {
   void fill(T inArr[], int length);
   T remove(int pos);
   T at(int pos);
-  T take(int pos);
 };
 
 /*
@@ -83,18 +82,17 @@ T ArrayList<T>::at(int pos) {
 }
 
 /*
-Take: returns the value at pos and removes it from the list. If the list is longer than the pos, it
+Remove: returns the value at pos and removes it from the list. If the list is longer than the pos, it
 places 0 in pos after getting the value. If the pos is the end of the list, the list will shrink
 by one.
 */
 template <class T>
-T ArrayList<T>::take(int pos) {
+T ArrayList<T>::remove(int pos) {
   T temp = arrList[pos];
   if (pos == arrLength - 1) {
     T *tempArr = new (std::nothrow) T[pos + 1];
     if (tempArr == nullptr) {
       std::cout << "Mem allocation error" << std::endl;
-      return;
     }
     for (int i = 0; i < arrLength + 1; i++) {
       tempArr[i] = arrList[i];
