@@ -41,17 +41,13 @@ it saves the new array as the primary array.
 template <class T>
 void ArrayList<T>::add(T inVal, int inPos) {
   if (inPos > arrLength) {
-    T *tempArr = new (std::nothrow) T[inPos + 1];
-    if (tempArr == nullptr) {
-      std::cout << "Mem allocation error" << std::endl;
-      return;
-    }
-    for (int i = 0; i < arrLength + 1; i++) {
+    T *tempArr = new T[inPos + 1];
+    for (int i = 0; i < arrLength; i++) {
       tempArr[i] = arrList[i];
     }
     tempArr[inPos] = inVal;
     delete arrList;
-    arrList = tempArr;
+    fill(tempArr, inPos + 1);
     delete tempArr;
   } else {
     arrList[inPos] = inVal;

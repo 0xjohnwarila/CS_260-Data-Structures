@@ -74,7 +74,7 @@ bool fillTest(void) {
   int testData[] = {15, 2, 32, 45, 51};
   std::cout << "Filling with array: { ";
   for (int i = 0; i < 5; i++) {
-    std::cout << testData[i] << ", ";
+    std::cout << testData[i] << " ";
   }
   std::cout << "}" << std::endl;
   std::array<int, 5> expectedData = {15, 2, 32, 45, 51};
@@ -82,7 +82,7 @@ bool fillTest(void) {
   newArray.fill(testData, 5);
   std::cout << "Array stored : { ";
   for (int i = 0; i < 5; i++) {
-    std::cout << newArray.at(i) << ", ";
+    std::cout << newArray.at(i) << " ";
     returnData[i] = newArray.at(i);
   }
   std::cout << "}" << std::endl
@@ -99,6 +99,35 @@ bool fillTest(void) {
   }
 }
 
+bool edgeCaseTest(void) {
+  std::cout << "*** Edge Case Tests ***" << std::endl;
+
+  std::cout << std::endl
+            << "Adding beyond bounds" << std::endl;
+  ArrayList<int> newArray;
+  int testData[] = {15, 2, 32, 45, 51};
+  newArray.fill(testData, 5);
+  std::cout << "Filling with ";
+  for (int i = 0; i < 5; i++) {
+    std::cout << testData[i] << " ";
+  }
+  std::cout << std::endl;
+  std::cout << std::endl
+            << "Adding 89 to position 7" << std::endl;
+  newArray.add(89, 7);
+  std::cout << "List is now ";
+  for (int i = 0; i < 8; i++) {
+    std::cout << newArray.at(i) << " ";
+  }
+  std::cout << std::endl
+            << std::endl;
+
+  std::cout << "Removing from position 66 (out of bounds) : got back " << newArray.remove(66)
+            << ". Expected 0." << std::endl;
+
+  return true;
+}
+
 bool array_list_TestSuite(void) {
-  return (addTest() && removeTest() && fillTest());
+  return (addTest() && removeTest() && fillTest() && edgeCaseTest());
 }
