@@ -33,19 +33,6 @@ class AutoSortList {
       next->prev = prev->next = this;
     }
 
-    void insertHead(Node *head) {
-      // Insert the Node before head
-      next = head;
-      next->prev = prev = this;
-    }
-
-    void append(Node *other) {
-      // Insert after other
-      next = this;
-      prev = other;
-      other->next = next = this;
-    }
-
     void remove(void) {
       // remove self from list
       next->prev = prev;

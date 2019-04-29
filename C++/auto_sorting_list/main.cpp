@@ -12,6 +12,7 @@ int main() {
   newAutoList.add(9);
   newAutoList.add(999);
   newAutoList.add(0);
+  newAutoList.add(-77);
   for (auto &&i : newAutoList) {
     std::cout << i << std::endl;
   }
