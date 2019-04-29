@@ -1,6 +1,11 @@
 /*
 Auto Sorting List. Base ADT Linked List.
 
+When a new value is added to the list, it will be sorted by ascending value.
+The list requires the type of value insert to be comparable. When adding a value
+it takes O(n) time.
+
+Also has built in iterator for easy range based for looping.
 */
 #pragma once
 
@@ -88,10 +93,6 @@ class AutoSortList {
     return currentNode;
   }
 
-  // Traces through list looking for a node with val > inVal
-  Node *valTrace(T inVal) {
-  }
-
   Node *head;
   Node *tail;
   int listLength;
@@ -127,6 +128,8 @@ and if so inserts after tail.
 Then step one up the list and enter a for loop that iterates over the whole list
 , for each step check if the current node's value is greater than the inVal. If
 so insert before the current node. If not, check for tail, then advance one.
+
+Complexity O(n)
 */
 
 template <class T>
