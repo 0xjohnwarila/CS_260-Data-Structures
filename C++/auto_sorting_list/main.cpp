@@ -1,5 +1,6 @@
 #include <iostream>
 
+#include "auto_sorted_array.hpp"
 #include "auto_sorted_list.hpp"
 
 int main() {
@@ -16,6 +17,14 @@ int main() {
   for (auto &&i : newAutoList) {
     std::cout << i << std::endl;
   }
+
+  AutoSortArray<int> newAutoArr;
+  int test[5] = {1, 3, 4, 5, 6};
+  newAutoArr.fill(test, 5);
+  newAutoArr.add(0);
+
+  for (int i = 0; i < 6; i++)
+    std::cout << newAutoArr.at(i) << std::endl;
 
   return EXIT_SUCCESS;
 }
