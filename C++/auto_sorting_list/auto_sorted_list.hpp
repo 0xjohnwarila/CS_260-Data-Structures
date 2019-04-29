@@ -133,6 +133,13 @@ class AutoSortList {
 PUBLIC METHOD: add(T inVal)
 
 Adds a new value to its correct position on the list.
+
+The method first checks if the next node of head is tail (checking for empty)
+and if so inserts after tail.
+
+Then step one up the list and enter a for loop that iterates over the whole list
+, for each step check if the current node's value is greater than the inVal. If
+so insert before the current node. If not, check for tail, then advance one.
 */
 
 template <class T>
