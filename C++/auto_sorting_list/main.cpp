@@ -18,9 +18,14 @@ int main() {
     std::cout << i << std::endl;
   }
 
+  std::cout << std::endl;
+
   AutoSortArray<int> newAutoArr;
   int test[5] = {1, 3, 4, 5, 6};
-  newAutoArr.fill(test, 5);
+  for (int i = 0; i < 5; i++) {
+    newAutoArr.add(test[i]);
+  }
+
   newAutoArr.add(0);
 
   for (int i = 0; i < 6; i++)
