@@ -24,11 +24,11 @@ bool addTest(void) {
   }
   std::cout << std::endl;
   if (returnData == testData) {
-    std::cout << "Add Test Passed" << std::endl
+    std::cout << "Add Test Passed!" << std::endl
               << std::endl;
     return true;
   } else {
-    std::cout << "Add Test Failed" << std::endl
+    std::cout << "Add Test Failed!" << std::endl
               << std::endl;
     return false;
   }
@@ -57,11 +57,11 @@ bool removeTest(void) {
             << std::endl;
 
   if (returnData == expectedData) {
-    std::cout << "Remove Test Passed" << std::endl
+    std::cout << "Remove Test Passed!" << std::endl
               << std::endl;
     return true;
   } else {
-    std::cout << "Remove Test Failed" << std::endl
+    std::cout << "Remove Test Failed!" << std::endl
               << std::endl;
     return false;
   }
@@ -89,11 +89,11 @@ bool fillTest(void) {
             << std::endl;
 
   if (returnData == expectedData) {
-    std::cout << "Fill Test Passed" << std::endl
+    std::cout << "Fill Test Passed!" << std::endl
               << std::endl;
     return true;
   } else {
-    std::cout << "Fill Test Failed" << std::endl
+    std::cout << "Fill Test Failed!" << std::endl
               << std::endl;
     return false;
   }
