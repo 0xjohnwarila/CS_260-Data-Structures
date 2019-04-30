@@ -31,7 +31,9 @@ int main() {
   for (int i = 0; i < 6; i++)
     std::cout << newAutoArr.at(i) << std::endl;
 
-  std::cout << newAutoArr.remove(1) << std::endl;
+  std::cout << std::endl
+            << newAutoArr.remove(2) << std::endl
+            << std::endl;
 
   for (int i = 0; i < 5; i++)
     std::cout << newAutoArr.at(i) << std::endl;
