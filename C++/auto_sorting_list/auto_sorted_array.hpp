@@ -84,11 +84,36 @@ void AutoSortArray<T>::add(T inVal) {
 /*
 Public method at(int pos)
 
-Returns the value at position pos
+Returns the value at index pos
 
 complexity O(1)
 */
 template <class T>
 T AutoSortArray<T>::at(int pos) {
   return arrList[pos];
+}
+
+/*
+Public method remove(int pos)
+
+Removes a value from the array at index pos, then returns value
+
+complexity O(n)
+*/
+template <class T>
+T AutoSortArray<T>::remove(int pos) {
+  T returnData = arrList[pos];
+
+  T *tempArr = new T[arrLength - 1];
+  for (int i = 0; i < pos; i++) {
+    tempArr[i] = arrList[i];
+  }
+
+  for (int i = pos + 1; i < arrLength; i++) {
+    tempArr[i - 1] = arrList[i];
+  }
+  arrLength--;
+  arrList = tempArr;
+  delete tempArr;
+  return returnData;
 }
