@@ -1,3 +1,6 @@
+/*
+Everything is O(n). Keeps stuff in order. You can take things out. You can put things in.
+*/
 #pragma once
 
 template <class T>
