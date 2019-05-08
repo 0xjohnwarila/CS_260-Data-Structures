@@ -13,6 +13,8 @@ int main() {
   intBST.add(3);
   intBST.add(23);
   intBST.add(-200);
+  intBST.add(23);
+  intBST.add(23);
   intBST.loadDataInOrder();
 
   std::vector<int> returnData = intBST.data();

@@ -37,13 +37,19 @@ class BinarySearchTree {
 
   void add(T inVal, Node *parent, Node *root) {
     if (root == nullptr) {
-      cout << "Hit nullptr" << endl;
+      cout << "Hit nullptr. Putting " << inVal << " after " << parent->value << " on the ";
       root = new Node(inVal, parent);
 
-      if (parent->value > root->value)
-        parent->rightChild = root;
-      else
+      if (parent->value > root->value) {
+        cout << "left." << endl;
         parent->leftChild = root;
+      }
+
+      else {
+        cout << "right." << endl;
+        parent->rightChild = root;
+      }
+
       return;
     }
 
@@ -53,7 +59,7 @@ class BinarySearchTree {
     }
 
     else {
-      cout << "Sub Tree Root value was less than inVal. Going to the Right" << endl;
+      cout << "Sub Tree Root value was less than or equal inVal. Going to the Right" << endl;
       add(inVal, root, root->rightChild);
     }
   }
@@ -117,7 +123,8 @@ void BinarySearchTree<T>::remove(T inVal) {
 
 template <class T>
 void BinarySearchTree<T>::add(T inVal) {
-  cout << "ADDING " << inVal << endl;
+  cout << endl
+       << "ADDING " << inVal << endl;
   if (root == nullptr) {
     cout << "Was empty, adding to the top" << endl;
     root = new Node(inVal);
