@@ -37,31 +37,17 @@ class BinarySearchTree {
 
   void add(T inVal, Node *parent, Node *root) {
     if (root == nullptr) {
-      cout << "Hit nullptr. Putting " << inVal << " after " << parent->value << " on the ";
       root = new Node(inVal, parent);
-
-      if (parent->value > root->value) {
-        cout << "left." << endl;
+      if (parent->value > root->value)
         parent->leftChild = root;
-      }
-
-      else {
-        cout << "right." << endl;
+      else
         parent->rightChild = root;
-      }
-
       return;
     }
-
-    if (root->value > inVal) {
-      cout << "Sub Tree Root value was greater than inVal. Going to the left" << endl;
+    if (root->value > inVal)
       add(inVal, root, root->leftChild);
-    }
-
-    else {
-      cout << "Sub Tree Root value was less than or equal inVal. Going to the Right" << endl;
+    else
       add(inVal, root, root->rightChild);
-    }
   }
 
   void inOrder(Node *root) {
@@ -70,6 +56,22 @@ class BinarySearchTree {
     nodeData.push_back(root->value);
     if (root->rightChild != nullptr)
       inOrder(root->rightChild);
+  }
+
+  void preOrder(Node *root) {
+    nodeData.push_back(root->value);
+    if (root->leftChild != nullptr)
+      inOrder(root->leftChild);
+    if (root->rightChild != nullptr)
+      inOrder(root->rightChild);
+  }
+
+  void postOrder(Node *root) {
+    if (root->leftChild != nullptr)
+      inOrder(root->leftChild);
+    if (root->rightChild != nullptr)
+      inOrder(root->rightChild);
+    nodeData.push_back(root->value);
   }
 
   size_t depth;
@@ -123,23 +125,15 @@ void BinarySearchTree<T>::remove(T inVal) {
 
 template <class T>
 void BinarySearchTree<T>::add(T inVal) {
-  cout << endl
-       << "ADDING " << inVal << endl;
   if (root == nullptr) {
-    cout << "Was empty, adding to the top" << endl;
     root = new Node(inVal);
     return;
   }
 
-  if (root->value > inVal) {
-    cout << "Root value was greater than inVal. Going to the left." << endl;
+  if (root->value > inVal)
     add(inVal, root, root->leftChild);
-  }
-
-  else {
-    cout << "Root value was less than inVal. Going to the right." << endl;
+  else
     add(inVal, root, root->rightChild);
-  }
 }
 
 template <class T>
