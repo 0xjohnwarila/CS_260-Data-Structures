@@ -107,20 +107,6 @@ check for value == inVal
 */
 template <class T>
 void BinarySearchTree<T>::remove(T inVal) {
-  if (root == nullptr)
-    return;
-
-  Node *nodeToRemove;
-
-  if (root->value == inVal) {
-    Node temp = new Node();
-    temp->leftChild = root;
-    nodeToRemove = remove(root, inVal, &temp);
-    root = temp->left;
-  }
-
-  if (nodeToRemove != nullptr)
-    delete nodeToRemove;
 }
 
 template <class T>
@@ -138,10 +124,29 @@ void BinarySearchTree<T>::add(T inVal) {
 
 template <class T>
 void BinarySearchTree<T>::loadDataInOrder(void) {
+  nodeData.clear();
   if (root == nullptr)
     return;
 
   inOrder(root);
+}
+
+template <class T>
+void BinarySearchTree<T>::loadDataPreOrder(void) {
+  nodeData.clear();
+  if (root == nullptr)
+    return;
+
+  preOrder(root);
+}
+
+template <class T>
+void BinarySearchTree<T>::loadDataPostOrder(void) {
+  nodeData.clear();
+  if (root == nullptr)
+    return;
+
+  postOrder(root);
 }
 
 template <class T>
