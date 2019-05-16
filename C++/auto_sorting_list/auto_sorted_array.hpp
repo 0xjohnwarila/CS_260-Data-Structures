@@ -73,7 +73,7 @@ template <class T>
 void AutoSortArray<T>::add(T inVal) {
   size_t pos = findPos(inVal);
   T *tempArr = new T[arrLength + 1];
-  for (size_t i = 0; i < findPos(inVal); i++) {
+  for (size_t i = 0; i < pos; i++) {
     tempArr[i] = arrList[i];
   }
   tempArr[pos] = inVal;

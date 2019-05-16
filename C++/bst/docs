@@ -1,0 +1,55 @@
+Remov Algorithm
+
+Cases for deleting a node
+  1) The node to delete has no subtree
+    - Very easy, just delete node
+  2) The node to delete has one subtree
+    - Easy, point parent node to subtree
+  3) The node to delete has two subtrees
+    - Hard...
+      * Find deletion node
+      * Find successor
+      * Replace deletion node with successor node
+      * Delete successor
+   Special cases
+    - Node to delete is head
+
+Finding successor Node
+  The successor node should be the minimum value in the right subtree. To find
+  follow the left child in each branch until you reach a node that does not
+  have left child.
+
+
+pseudo code for case 3
+
+parent = search(inVal)
+
+successor = parent->rightChild->minVal()
+
+if(successor->leftChild == nullptr)
+  parent->value = successor->value
+  parent->rightChild = successor->rightChild
+  return
+
+parent->value = successor->value
+
+successor->parent = successor->rightChild
+
+
+Full pseudo code for remove (Note Hibbard node deletion)
+
+if (k not in BST)
+  return
+
+if (k has no subtrees)
+  unlink k from k's parent
+  return
+
+if (k has 1 subtree)
+  make k's parent point to k's subtree
+  return
+
+if (k has 2 subtrees)
+  find the successor of k (right once, left until nullptr)
+  replace k with k's successor
+  make successor's parent point to the successor's right subtree

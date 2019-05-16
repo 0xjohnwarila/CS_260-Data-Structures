@@ -1,7 +1,4 @@
-#pragma once
-
 #include <iostream>
-#include <vector>
 
 using std::cout;
 using std::endl;
@@ -24,16 +21,13 @@ class BinarySearchTree {
                                                                      leftChild(leftChild),
                                                                      rightChild(rightChild) {}
 
-    T minVal(void) {
+    Node *minVal(void) {
       if (leftChild == nullptr)
-        return value;
+        return this;
       else
         return leftChild->minVal();
     }
   };
-
-  Node *remove(Node *root, T inVal, Node *parent) {
-  }
 
   void add(T inVal, Node *parent, Node *root) {
     if (root == nullptr) {
@@ -51,27 +45,78 @@ class BinarySearchTree {
   }
 
   void inOrder(Node *root) {
-    if (root->leftChild != nullptr)
-      inOrder(root->leftChild);
+    if (root == nullptr)
+      return;
+    inOrder(root->leftChild);
     nodeData.push_back(root->value);
-    if (root->rightChild != nullptr)
-      inOrder(root->rightChild);
+    inOrder(root->rightChild);
   }
 
   void preOrder(Node *root) {
+    if (root == nullptr)
+      return;
     nodeData.push_back(root->value);
-    if (root->leftChild != nullptr)
-      inOrder(root->leftChild);
-    if (root->rightChild != nullptr)
-      inOrder(root->rightChild);
+    preOrder(root->leftChild);
+    preOrder(root->rightChild);
   }
 
   void postOrder(Node *root) {
-    if (root->leftChild != nullptr)
-      inOrder(root->leftChild);
-    if (root->rightChild != nullptr)
-      inOrder(root->rightChild);
+    if (root == nullptr)
+      return;
+    postOrder(root->leftChild);
+    postOrder(root->rightChild);
     nodeData.push_back(root->value);
+  }
+
+  bool inTree(T inVal, Node *currentRoot) {
+    if(currentRoot == nullptr)
+      return false;
+    if(currentRoot->value == inVal)
+      return true;
+    if(currentRoot->value > inVal)
+      inTree(inVal, currentRoot->leftChild);
+    else 
+      inTree(inVal, currentRoot->rightChild);
+  }
+
+  Node *search(T inVal, Node *root){
+    if(root->value == inVal)
+      return root;
+    if(root->value > inVal)
+      return search(inVal, root->leftChild);
+    else
+      return search(inVal, root->rightChild);
+  }
+
+  void removeNoSubtree(Node *parent) {
+    if (parent->parent->leftChild == parent)
+      parent->parent->leftChild = nullptr;
+    else
+      parent->parent->rightChild = nullptr;
+    delete parent;
+  }
+
+  void removeOneSubtree(Node *parent) {
+    if (parent->leftChild != nullptr)
+      parent->parent->leftChild = parent->leftChild;
+    else
+      parent->parent->rightChild = parent->rightChild;
+
+    delete parent;
+  }
+
+  void removeTwoSubtree(Node *parent) {
+    if (parent == root) {
+      T tempValue = parent->leftChild->value;
+      remove(tempValue);
+      parent->value = tempValue;
+      return;
+    }
+    Node *successor = parent->minVal();
+
+    parent->value = successor->value;
+    successor->parent->leftChild = nullptr;
+    delete successor;
   }
 
   size_t depth;
@@ -99,14 +144,36 @@ BinarySearchTree<T>::BinarySearchTree() {
 }
 
 /*
-check for null root
-
-check for left or right
-
-check for value == inVal
+See doc file for full explanation of remove method.
 */
 template <class T>
 void BinarySearchTree<T>::remove(T inVal) {
+  // Check if the BST doesn't exist
+  if (root == nullptr)
+    return;
+
+  // Check if the value is not in the BST
+  if (!inTree(inVal, root))
+    return;
+  
+  // Check if the parent has no subtree
+  Node *parent = search(inVal, root);
+  if ( (parent->leftChild == nullptr) && (parent->rightChild == nullptr) ){
+    removeNoSubtree(parent);
+    return;
+  }
+
+  // Check if the parent has one subtree
+  if ( (parent->leftChild != nullptr || parent->rightChild != nullptr) && !(parent->leftChild != nullptr && parent->rightChild != nullptr) ) {
+   removeOneSubtree(parent);
+   return;
+  }
+
+  // Check if the parent has two subtree
+  if ( (parent->leftChild != nullptr) && (parent->rightChild != nullptr) ) {
+    removeTwoSubtree(parent);
+    return;
+  }
 }
 
 template <class T>
@@ -125,27 +192,18 @@ void BinarySearchTree<T>::add(T inVal) {
 template <class T>
 void BinarySearchTree<T>::loadDataInOrder(void) {
   nodeData.clear();
-  if (root == nullptr)
-    return;
-
   inOrder(root);
 }
 
 template <class T>
 void BinarySearchTree<T>::loadDataPreOrder(void) {
   nodeData.clear();
-  if (root == nullptr)
-    return;
-
   preOrder(root);
 }
 
 template <class T>
 void BinarySearchTree<T>::loadDataPostOrder(void) {
   nodeData.clear();
-  if (root == nullptr)
-    return;
-
   postOrder(root);
 }
 

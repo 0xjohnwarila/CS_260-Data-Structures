@@ -1,0 +1,11 @@
+Tests
+
+Empty Table
+  TEST 1
+
+    Insert x
+    Check if table contains x
+
+  TEST 2
+
+    Check if table contains x // Empty table handling
