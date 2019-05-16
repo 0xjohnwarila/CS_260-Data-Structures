@@ -16,7 +16,7 @@ class Person {
   Person();
   Person(std::string key, float gradePointAverage);
 
-  std::string key(void);
+  std::string key(void) const;
 
-  float gradePointAverage(void);
+  float gradePointAverage(void) const;
 };

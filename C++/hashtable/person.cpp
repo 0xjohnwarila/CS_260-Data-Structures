@@ -10,10 +10,10 @@ Person::Person(std::string key, float gradePointAverage) {
   gradePointAverage_ = gradePointAverage;
 }
 
-std::string Person::key(void) {
+std::string Person::key(void) const{
   return key_;
 }
 
-float Person::gradePointAverage(void) {
+float Person::gradePointAverage(void) const{
   return gradePointAverage_;
 }

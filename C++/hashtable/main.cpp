@@ -21,9 +21,8 @@ int main() {
   std::cout << "HashTable" << std::endl;
   personTesting();
   
-  const std::string hashFunc = "SHA-256";
   const std::string collisionHandler = "Linear Probing";
   
-  HashTable<Person> table = HashTable<Person>(8, hashFunc, collisionHandler);
+  HashTable<Person> table = HashTable<Person>(8, collisionHandler);
   return EXIT_SUCCESS;
 }
