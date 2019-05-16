@@ -1,11 +1,36 @@
 Tests
 
-Empty Table
-  TEST 1
+- Adding to empty table
+- Adding to non-empty table
+- Search for key in empty table
+- Search for key in non-empty table that doesn't contain key
+- Search for key in non-empty table that does contain key
+- Remove from empty table
+- Remove from non-empty table
+- Handle collisions correctly
 
-    Insert x
-    Check if table contains x
+Design V0.1
+  
+  Req's
+    
+    1) Store a fixed size array of objects
+      - Size is determined by user in construction
+      - Objects must have some key, be it string or some number
+    
+    2) Have some add method to add an object to a unique position
+      - To find unique position run key through a hashing function
+      - If there is a collision, handle it according to the chosen collision
+        handling method
 
-  TEST 2
+    3) Have some set of hashing functions
+      - The one that will be used for the table will be chosen by the user at
+        construction
 
-    Check if table contains x // Empty table handling
+    4) Have consistent way of handling collisions
+      - Again chosen by user
+    
+    5) Return an object based on its key in as close to constant time as
+       possible
+
+    6) Keep track of number of collisions and number of objects stored
+      - For analysis of performance
