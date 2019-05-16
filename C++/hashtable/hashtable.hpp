@@ -31,6 +31,9 @@ class HashTable {
   void get(std::string& key);
 };
 
+//
+// CONSTRUCTOR
+//
 
 template <class T>
 HashTable<T>::HashTable(size_t size, const std::string& collisionHandler) {
@@ -39,6 +42,11 @@ HashTable<T>::HashTable(size_t size, const std::string& collisionHandler) {
   collisionCount_ = 0;
   objectCount_ = 0;
 }
+
+//
+// PUBLIC
+// METHODS
+//
 
 
 //

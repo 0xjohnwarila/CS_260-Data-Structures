@@ -9,7 +9,7 @@ Tests
 - Remove from non-empty table
 - Handle collisions correctly
 
-Design V0.1
+Design V0.1.2
   
   Req's
     
@@ -23,12 +23,11 @@ Design V0.1
         handling method
 
     3) Have some set of hashing functions
-      - The one that will be used for the table will be chosen by the user at
-        construction
+      - For now just one
 
     4) Have consistent way of handling collisions
-      - Again chosen by user
-    
+      - Chosen by user
+
     5) Return an object based on its key in as close to constant time as
        possible
 
