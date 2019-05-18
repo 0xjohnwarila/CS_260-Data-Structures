@@ -88,7 +88,7 @@ void HashTable<T>::add(const T& inObject) {
   size_t index = hash(key, size_);
   insert(index, inObject);
 
-  if (loadFactorAtCritical())
+  if (loadFactorAtCritical() && openIndex)
     switchCollision();
 }
 
