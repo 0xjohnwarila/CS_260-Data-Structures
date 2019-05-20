@@ -23,7 +23,7 @@ class HashTable {
 
   std::vector<T> table;
 
-  T nullObject;
+  const T& nullObject = T(true);
 
   T* array(size_t inSize) const;
   size_t hash(const std::string& key, size_t size) const;
@@ -33,7 +33,8 @@ class HashTable {
   void setCollision(const std::string& collisionHandler);
   void switchCollision(void);
   void rehashAll(void);
-  void insert(size_t index, const T& inObject);
+  void insert(const size_t index, const T& inObject);
+  void collision(const size_t index, const T& inObject);
 
  public:
   // The constructor requires a size, a hashFunction to use, and a collsionHandler
@@ -100,15 +101,15 @@ void HashTable<T>::add(const T& inObject) {
 template <class T>
 void HashTable<T>::createTable(size_t size) {
   for (size_t i = 0; i < size; i++)
-    table.push_back(T(true));
+    table.push_back(nullObject);
 }
 
 template <class T>
-void HashTable<T>::insert(size_t index, const T& inObject) {
+void HashTable<T>::insert(const size_t index, const T& inObject) {
   if (indexFull(index, inObject))
     collision(index, inObject);
   else
-    table[index] = inObject;
+    table.at(index) = inObject;
 }
 
 template <class T>
@@ -120,7 +121,23 @@ bool HashTable<T>::indexFull(size_t index, const T& inObject) const {
 }
 
 template <class T>
-void collision(size_t index, T& inObject) {
+void HashTable<T>::collision(const size_t index, const T& inObject) {
+  for (size_t i = index; i < size_; i++) {
+    if (table.at(i).isNull()) {
+      table.at(i) = inObject;
+      return;
+    }
+  }
+
+  // No empty after the object, go to start of table
+  for (size_t i = index; i >= 0; i--) {
+    if (table.at(i).isNull()) {
+      table.at(i) = inObject;
+      return;
+    }
+  }
+
+  std::cerr << "No room for object" << std::endl;
 }
 
 template <class T>
