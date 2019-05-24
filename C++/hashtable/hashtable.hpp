@@ -1,3 +1,5 @@
+// Basic hashtable, no fancy collision avoidance, just linear probing.
+
 #pragma once
 
 #include <array>
@@ -15,10 +17,6 @@ class HashTable {
 
   size_t size_;
 
-  bool linProbe;
-  bool doubleHash;
-  bool openIndex;
-
   std::vector<T> table;
 
   const T& nullObject = T(true);
@@ -28,14 +26,13 @@ class HashTable {
   bool indexFull(size_t index, const T& inObject) const;
   bool isCorrectIndex(std::string key, size_t index) const;
   void createTable(size_t size);
-  void setCollision(const std::string& collisionHandler);
   void insert(const size_t index, const T& inObject);
   void collision(const size_t index, const T& inObject);
   void removeFromTable(size_t index);
 
  public:
   // The constructor requires a size, a hashFunction to use, and a collsionHandler
-  HashTable(size_t size, const std::string& collisionHandler);
+  HashTable(size_t size);
 
   int collisionCount(void) const;
   int objectCount(void) const;
@@ -54,9 +51,8 @@ class HashTable {
 //
 
 template <class T>
-HashTable<T>::HashTable(size_t size, const std::string& collisionHandler) {
+HashTable<T>::HashTable(size_t size) {
   createTable(size);
-  setCollision(collisionHandler);
   collisionCount_ = 0;
   objectCount_ = 0;
   size_ = size;
@@ -118,9 +114,15 @@ T HashTable<T>::get(std::string key) const {
     return table.at(index);
 
   index = walk(key, index);
-  if (index == size_ + 1)
-    return nullObject;
-  return table.at(index);
+  if (index == size_)
+    return T(true);
+  else
+    return table.at(index);
+}
+
+template <class T>
+float HashTable<T>::loadFactor(void) const {
+  return (objectCount_ / size_);
 }
 
 //
@@ -138,17 +140,17 @@ void HashTable<T>::removeFromTable(size_t index) {
 template <class T>
 size_t HashTable<T>::walk(std::string key, size_t index) const {
   for (size_t i = index; i < size_; i++) {
-    if (isCorrectIndex(key, index))
-      return index;
+    if (isCorrectIndex(key, i))
+      return i;
   }
 
   for (int i = index; i >= 0; i--) {
-    if (isCorrectIndex(key, index))
-      return index;
+    if (isCorrectIndex(key, i))
+      return i;
   }
 
   std::cerr << "Key not found" << std::endl;
-  return size_ + 1;
+  return size_;
 }
 
 template <class T>
@@ -196,13 +198,6 @@ void HashTable<T>::collision(const size_t index, const T& inObject) {
   }
 
   std::cerr << "No room for object" << std::endl;
-}
-
-template <class T>
-void HashTable<T>::setCollision(const std::string& collisionHandler) {
-  linProbe = (collisionHandler == "Linear Probing");
-  doubleHash = (collisionHandler == "Double Hashing");
-  openIndex = true;
 }
 
 template <class T>

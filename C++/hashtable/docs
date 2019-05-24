@@ -1,15 +1,19 @@
 Tests
 
-- Adding to empty table
-- Adding to non-empty table
-- Search for key in empty table
-- Search for key in non-empty table that doesn't contain key
-- Search for key in non-empty table that does contain key
+- Adding to empty table [x]
+- Adding to non-empty table [x]
+- Search for key in empty table 
+- Search for key in non-empty table that doesn't contain key [x]
+- Search for key in non-empty table that does contain key [x]
 - Remove from empty table
 - Remove from non-empty table
 - Handle collisions correctly
 
 Design V0.1.3
+
+  Simple Version
+    Same as below, but uses only linear probing and a hash function designed to create MORE
+    collisions for testing.
   
   Req's
     
