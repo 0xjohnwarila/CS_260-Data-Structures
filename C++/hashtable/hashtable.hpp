@@ -23,9 +23,10 @@ class HashTable {
 
   const T& nullObject = T(true);
 
-  T* array(size_t inSize) const;
-  size_t hash(const std::string& key, size_t size) const;
+  T walk(std::string key, size_t index) const;
+  size_t hash(const std::string key, size_t size) const;
   bool indexFull(size_t index, const T& inObject) const;
+  bool isCorrectIndex(std::string key, size_t index) const;
   void createTable(size_t size);
   void setCollision(const std::string& collisionHandler);
   void insert(const size_t index, const T& inObject);
@@ -44,7 +45,7 @@ class HashTable {
 
   void add(const T& inObject);
   void remove(T& inObject);
-  void get(std::string& key);
+  T get(std::string key) const;
 };
 
 //
@@ -82,15 +83,44 @@ size_t HashTable<T>::size(void) const {
 
 template <class T>
 void HashTable<T>::add(const T& inObject) {
-  const std::string& key = inObject.key();
+  const std::string key = inObject.key();
   size_t index = hash(key, size_);
   insert(index, inObject);
+}
+
+template <class T>
+T HashTable<T>::get(std::string key) const {
+  size_t index = hash(key, size_);
+  if (isCorrectIndex(key, index))
+    return table.at(index);
+  else
+    return walk(key, index);
 }
 
 //
 // PRIVATE
 // METHODS
 //
+
+template <class T>
+T HashTable<T>::walk(std::string key, size_t index) const {
+  for (size_t i = index; i < size_; i++) {
+    if (isCorrectIndex(key, index))
+      return table.at(index);
+  }
+
+  for (int i = index; i >= 0; i--) {
+    if (isCorrectIndex(key, index))
+      return table.at(index);
+  }
+
+  std::cerr << "Key not found" << std::endl;
+}
+
+template <class T>
+bool HashTable<T>::isCorrectIndex(std::string key, size_t index) const {
+  return table.at(index).key() == key;
+}
 
 template <class T>
 void HashTable<T>::createTable(size_t size) {
@@ -102,16 +132,12 @@ template <class T>
 void HashTable<T>::insert(const size_t index, const T& inObject) {
   if (indexFull(index, inObject))
     collision(index, inObject);
-  else {
+  else
     table.at(index) = inObject;
-    std::cout << "Inserting " << inObject.key() << " " << inObject.gradePointAverage() << " at " << index << std::endl;
-  }
 }
 
 template <class T>
 bool HashTable<T>::indexFull(size_t index, const T& inObject) const {
-  std::cout << "!table.at(index).inNull() " << !table.at(index).isNull() << std::endl;
-  std::cout << "table.at(index).key() != inObject.key() " << (table.at(index).key() != inObject.key()) << std::endl;
   if ((!table.at(index).isNull()) && (table.at(index).key() != inObject.key()))
     return true;
   else
@@ -123,7 +149,6 @@ void HashTable<T>::collision(const size_t index, const T& inObject) {
   for (size_t i = index; i < size_; i++) {
     if (table.at(i).isNull()) {
       table.at(i) = inObject;
-      std::cout << "Inserting" << inObject.key() << " at " << i << std::endl;
       return;
     }
   }
@@ -147,16 +172,12 @@ void HashTable<T>::setCollision(const std::string& collisionHandler) {
 }
 
 template <class T>
-size_t HashTable<T>::hash(const std::string& key, size_t size) const {
+size_t HashTable<T>::hash(const std::string key, size_t size) const {
   size_t index = 0;
 
   for (auto&& i : key) {
     index += i;
   }
-
-  std::cout << std::endl
-            << "HASH = " << index << std::endl
-            << std::endl;
 
   return index % size_;
 }

@@ -30,5 +30,12 @@ int main() {
   table.add(dave);
   table.add(dave2);
 
+  std::string copykey = "Dave";
+
+  const Person daveCopy = table.get(copykey);
+
+  std::cout << std::endl
+            << "Dave Copy is : " << daveCopy.key() << " " << daveCopy.gradePointAverage() << std::endl;
+
   return EXIT_SUCCESS;
 }
