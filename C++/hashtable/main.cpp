@@ -23,6 +23,8 @@ int main() {
 
   const std::string collisionHandler = "Linear Probing";
 
+  const Person nullObject = Person(true);
+
   HashTable<Person> table = HashTable<Person>(8, collisionHandler);
 
   const Person& dave = Person("Dave", 3.6);
@@ -34,8 +36,15 @@ int main() {
 
   const Person daveCopy = table.get(copykey);
 
-  std::cout << std::endl
-            << "Dave Copy is : " << daveCopy.key() << " " << daveCopy.gradePointAverage() << std::endl;
+  if (table.get(copykey).isNull())
+    std::cout << "NULL" << std::endl;
+  else
+    std::cout << "Dave's here" << std::endl;
+
+  table.remove(copykey);
+
+  if (table.get(copykey).isNull())
+    std::cout << "Dave's not here man" << std::endl;
 
   return EXIT_SUCCESS;
 }
