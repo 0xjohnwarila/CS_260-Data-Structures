@@ -15,8 +15,6 @@ class HashTable {
 
   size_t size_;
 
-  const float CRITICAL_LOAD_FACTOR = .7;
-
   bool linProbe;
   bool doubleHash;
   bool openIndex;
@@ -27,12 +25,9 @@ class HashTable {
 
   T* array(size_t inSize) const;
   size_t hash(const std::string& key, size_t size) const;
-  bool loadFactorAtCritical(void) const;
   bool indexFull(size_t index, const T& inObject) const;
   void createTable(size_t size);
   void setCollision(const std::string& collisionHandler);
-  void switchCollision(void);
-  void rehashAll(void);
   void insert(const size_t index, const T& inObject);
   void collision(const size_t index, const T& inObject);
 
@@ -42,6 +37,8 @@ class HashTable {
 
   int collisionCount(void) const;
   int objectCount(void) const;
+
+  float loadFactor(void) const;
 
   size_t size(void) const;
 
@@ -88,9 +85,6 @@ void HashTable<T>::add(const T& inObject) {
   const std::string& key = inObject.key();
   size_t index = hash(key, size_);
   insert(index, inObject);
-
-  if (loadFactorAtCritical() && openIndex)
-    switchCollision();
 }
 
 //
@@ -108,13 +102,17 @@ template <class T>
 void HashTable<T>::insert(const size_t index, const T& inObject) {
   if (indexFull(index, inObject))
     collision(index, inObject);
-  else
+  else {
     table.at(index) = inObject;
+    std::cout << "Inserting " << inObject.key() << " " << inObject.gradePointAverage() << " at " << index << std::endl;
+  }
 }
 
 template <class T>
 bool HashTable<T>::indexFull(size_t index, const T& inObject) const {
-  if (!table.at(index).isNull() && table.at(index).key() != inObject.key())
+  std::cout << "!table.at(index).inNull() " << !table.at(index).isNull() << std::endl;
+  std::cout << "table.at(index).key() != inObject.key() " << (table.at(index).key() != inObject.key()) << std::endl;
+  if ((!table.at(index).isNull()) && (table.at(index).key() != inObject.key()))
     return true;
   else
     return false;
@@ -125,6 +123,7 @@ void HashTable<T>::collision(const size_t index, const T& inObject) {
   for (size_t i = index; i < size_; i++) {
     if (table.at(i).isNull()) {
       table.at(i) = inObject;
+      std::cout << "Inserting" << inObject.key() << " at " << i << std::endl;
       return;
     }
   }
@@ -148,28 +147,6 @@ void HashTable<T>::setCollision(const std::string& collisionHandler) {
 }
 
 template <class T>
-void HashTable<T>::rehashAll(void) {
-  std::vector<T> tempVector = table;
-  table.empty();
-  for (size_t i = 0; i < size_; i++)
-    add(tempVector[i]);
-}
-
-template <class T>
-T* HashTable<T>::array(size_t inSize) const {
-  T* newArray = new (std::nothrow) T[inSize];
-  if (newArray == nullptr)
-    std::cerr << "Mem allocation error" << std::endl;
-  return newArray;
-}
-
-template <class T>
-void HashTable<T>::switchCollision(void) {
-  openIndex = false;
-  rehashAll();
-}
-
-template <class T>
 size_t HashTable<T>::hash(const std::string& key, size_t size) const {
   size_t index = 0;
 
@@ -177,15 +154,9 @@ size_t HashTable<T>::hash(const std::string& key, size_t size) const {
     index += i;
   }
 
+  std::cout << std::endl
+            << "HASH = " << index << std::endl
+            << std::endl;
+
   return index % size_;
-}
-
-template <class T>
-bool HashTable<T>::loadFactorAtCritical(void) const {
-  float loadFactor = objectCount_ / size_;
-
-  if (loadFactor > CRITICAL_LOAD_FACTOR)
-    return true;
-
-  return false;
 }

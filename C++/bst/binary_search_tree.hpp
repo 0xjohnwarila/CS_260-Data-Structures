@@ -31,6 +31,8 @@ class BinarySearchTree {
     }
   };
 
+  // PRIVATE add method
+  // O(n)
   void add(T inVal, Node *parent, Node *root) {
     if (root == nullptr) {
       root = new Node(inVal, parent);
@@ -46,6 +48,8 @@ class BinarySearchTree {
       add(inVal, root, root->rightChild);
   }
 
+  // In Order loading
+  // O(n)
   void inOrder(Node *root) {
     if (root == nullptr)
       return;
@@ -54,6 +58,8 @@ class BinarySearchTree {
     inOrder(root->rightChild);
   }
 
+  // Pre Order loading
+  // O(n)
   void preOrder(Node *root) {
     if (root == nullptr)
       return;
@@ -62,6 +68,8 @@ class BinarySearchTree {
     preOrder(root->rightChild);
   }
 
+  // Post Order loading
+  // O(n)
   void postOrder(Node *root) {
     if (root == nullptr)
       return;
@@ -70,26 +78,32 @@ class BinarySearchTree {
     nodeData.push_back(root->value);
   }
 
+  // Checks if a member is in the tree
+  // O(n)
   bool inTree(T inVal, Node *currentRoot) {
-    if(currentRoot == nullptr)
+    if (currentRoot == nullptr)
       return false;
-    if(currentRoot->value == inVal)
+    if (currentRoot->value == inVal)
       return true;
-    if(currentRoot->value > inVal)
+    if (currentRoot->value > inVal)
       inTree(inVal, currentRoot->leftChild);
-    else 
+    else
       inTree(inVal, currentRoot->rightChild);
   }
 
-  Node *search(T inVal, Node *root){
-    if(root->value == inVal)
+  // Returns pointer to node with inVal
+  // O(n)
+  Node *search(T inVal, Node *root) {
+    if (root->value == inVal)
       return root;
-    if(root->value > inVal)
+    if (root->value > inVal)
       return search(inVal, root->leftChild);
     else
       return search(inVal, root->rightChild);
   }
 
+  // Removes with no subtree
+  // O(1)
   void removeNoSubtree(Node *parent) {
     if (parent->parent->leftChild == parent)
       parent->parent->leftChild = nullptr;
@@ -98,6 +112,8 @@ class BinarySearchTree {
     delete parent;
   }
 
+  // Removes with one subtree
+  // O(1)
   void removeOneSubtree(Node *parent) {
     if (parent->leftChild != nullptr)
       parent->parent->leftChild = parent->leftChild;
@@ -107,6 +123,8 @@ class BinarySearchTree {
     delete parent;
   }
 
+  // Removes with two subtrees
+  // O(1)
   void removeTwoSubtree(Node *parent) {
     if (parent == root) {
       T tempValue = parent->leftChild->value;
@@ -147,6 +165,7 @@ BinarySearchTree<T>::BinarySearchTree() {
 
 /*
 See doc file for full explanation of remove method.
+O(n)
 */
 template <class T>
 void BinarySearchTree<T>::remove(T inVal) {
@@ -157,27 +176,29 @@ void BinarySearchTree<T>::remove(T inVal) {
   // Check if the value is not in the BST
   if (!inTree(inVal, root))
     return;
-  
+
   // Check if the parent has no subtree
   Node *parent = search(inVal, root);
-  if ( (parent->leftChild == nullptr) && (parent->rightChild == nullptr) ){
+  if ((parent->leftChild == nullptr) && (parent->rightChild == nullptr)) {
     removeNoSubtree(parent);
     return;
   }
 
   // Check if the parent has one subtree
-  if ( (parent->leftChild != nullptr || parent->rightChild != nullptr) && !(parent->leftChild != nullptr && parent->rightChild != nullptr) ) {
-   removeOneSubtree(parent);
-   return;
+  if ((parent->leftChild != nullptr || parent->rightChild != nullptr) && !(parent->leftChild != nullptr && parent->rightChild != nullptr)) {
+    removeOneSubtree(parent);
+    return;
   }
 
   // Check if the parent has two subtree
-  if ( (parent->leftChild != nullptr) && (parent->rightChild != nullptr) ) {
+  if ((parent->leftChild != nullptr) && (parent->rightChild != nullptr)) {
     removeTwoSubtree(parent);
     return;
   }
 }
 
+// Add a new object to the BST recursively
+// O(n)
 template <class T>
 void BinarySearchTree<T>::add(T inVal) {
   if (root == nullptr) {
@@ -191,24 +212,31 @@ void BinarySearchTree<T>::add(T inVal) {
     add(inVal, root, root->rightChild);
 }
 
+// Load node data with In Order
+// O(n)
 template <class T>
 void BinarySearchTree<T>::loadDataInOrder(void) {
   nodeData.clear();
   inOrder(root);
 }
 
+// Load node data with Pre Order
+// O(n)
 template <class T>
 void BinarySearchTree<T>::loadDataPreOrder(void) {
   nodeData.clear();
   preOrder(root);
 }
 
+// Load node data with Post Order
+// O(n)
 template <class T>
 void BinarySearchTree<T>::loadDataPostOrder(void) {
   nodeData.clear();
   postOrder(root);
 }
 
+// Return node data that was previously loaded
 template <class T>
 std::vector<T> BinarySearchTree<T>::data(void) {
   return nodeData;

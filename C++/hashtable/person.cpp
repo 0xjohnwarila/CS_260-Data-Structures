@@ -12,6 +12,7 @@ Person::Person(bool isNull) {
 Person::Person(std::string key, float gradePointAverage) {
   key_ = key;
   gradePointAverage_ = gradePointAverage;
+  isNull_ = false;
 }
 
 std::string Person::key(void) const {

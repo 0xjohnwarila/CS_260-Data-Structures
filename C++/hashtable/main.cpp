@@ -26,8 +26,9 @@ int main() {
   HashTable<Person> table = HashTable<Person>(8, collisionHandler);
 
   const Person& dave = Person("Dave", 3.6);
-
+  const Person& dave2 = Person("Evad", 2.5);
   table.add(dave);
+  table.add(dave2);
 
-    return EXIT_SUCCESS;
+  return EXIT_SUCCESS;
 }
