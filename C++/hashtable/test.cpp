@@ -26,20 +26,20 @@ bool addGetTest(void) {
 
   bool passing = true;
 
-  auto keysMatch = [](std::string key1, std::string key2) { return key1 == key2; };
-  auto gpaMatch = [](float gpa1, float gpa2) { return gpa1 == gpa2; };
+  auto keysMissMatch = [](std::string key1, std::string key2) { return !(key1 == key2); };
+  auto gpaMissMatch = [](float gpa1, float gpa2) { return !(gpa1 == gpa2); };
 
-  if (!keysMatch(returnData.at(0).key(), testPerson1.key()))
+  if (keysMissMatch(returnData.at(0).key(), testPerson1.key()))
     passing = false;
-  if (!gpaMatch(returnData.at(0).gradePointAverage(), testPerson1.gradePointAverage()))
+  if (gpaMissMatch(returnData.at(0).gradePointAverage(), testPerson1.gradePointAverage()))
     passing = false;
-  if (!keysMatch(returnData.at(1).key(), testPerson2.key()))
+  if (keysMissMatch(returnData.at(1).key(), testPerson2.key()))
     passing = false;
-  if (!gpaMatch(returnData.at(1).gradePointAverage(), testPerson2.gradePointAverage()))
+  if (gpaMissMatch(returnData.at(1).gradePointAverage(), testPerson2.gradePointAverage()))
     passing = false;
-  if (!keysMatch(returnData.at(2).key(), testPerson3.key()))
+  if (keysMissMatch(returnData.at(2).key(), testPerson3.key()))
     passing = false;
-  if (!gpaMatch(returnData.at(2).gradePointAverage(), testPerson3.gradePointAverage()))
+  if (gpaMissMatch(returnData.at(2).gradePointAverage(), testPerson3.gradePointAverage()))
     passing = false;
   if (!(table.get("Not In Table").isNull()))
     passing = false;

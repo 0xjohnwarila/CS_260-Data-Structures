@@ -7,7 +7,7 @@ Tests
 - Search for key in non-empty table that does contain key [x]
 - Remove from empty table
 - Remove from non-empty table
-- Handle collisions correctly
+- Handle collisions correctly [x]
 
 Design V0.1.3
 
