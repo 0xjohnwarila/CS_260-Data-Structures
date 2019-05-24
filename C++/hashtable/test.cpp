@@ -72,5 +72,25 @@ bool collisionTest(void) {
 }
 
 bool removeTest(void) {
-  return false;
+  const Person testPerson1 = Person("Dave", 3.6);
+  const Person testPerson2 = Person("Mike", 2.8);
+  const Person testPerson3 = Person("Jill", 3.9);
+
+  size_t size = 10;
+
+  HashTable<Person> table = HashTable<Person>(size);
+
+  table.add(testPerson1);
+  table.add(testPerson2);
+  table.add(testPerson3);
+
+  table.remove("Dave");
+  table.remove("Not in Table");
+
+  bool passing = true;
+
+  if (!table.get("Dave").isNull())
+    passing = false;
+
+  return passing;
 }

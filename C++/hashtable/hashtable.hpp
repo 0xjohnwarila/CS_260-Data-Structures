@@ -132,8 +132,11 @@ float HashTable<T>::loadFactor(void) const {
 
 template <class T>
 void HashTable<T>::removeFromTable(size_t index) {
-  if (table.at(index).isNull())
+  // Do bounds check. Because it will check the bounds before the other side of the or, we won't
+  // have an out of range.
+  if (index >= size_ || table.at(index).isNull())
     return;
+  // Fill with nullObject
   table.at(index) = T(true);
 }
 

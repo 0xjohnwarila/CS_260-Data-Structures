@@ -5,8 +5,8 @@ Tests
 - Search for key in empty table 
 - Search for key in non-empty table that doesn't contain key [x]
 - Search for key in non-empty table that does contain key [x]
-- Remove from empty table
-- Remove from non-empty table
+- Remove from empty table [x]
+- Remove from non-empty table [x]
 - Handle collisions correctly [x]
 
 Design V0.1.3
