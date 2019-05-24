@@ -2,49 +2,25 @@
 
 #include "hashtable.hpp"
 #include "person.hpp"
-
-bool personTesting(void) {
-  std::string testName = "Dave";
-  float testGPA = 3.6;
-  Person* testPerson = new Person(testName, testGPA);
-
-  if (testPerson->key() == testName)
-    std::cout << "Key's Match" << std::endl;
-
-  if (testPerson->gradePointAverage() == testGPA)
-    std::cout << "GPA's Match" << std::endl;
-
-  return true;
-}
+#include "test.hpp"
 
 int main() {
   std::cout << "HashTable" << std::endl;
-  personTesting();
 
-  const std::string collisionHandler = "Linear Probing";
-
-  const Person nullObject = Person(true);
-
-  HashTable<Person> table = HashTable<Person>(8, collisionHandler);
-
-  const Person& dave = Person("Dave", 3.6);
-  const Person& dave2 = Person("Evad", 2.5);
-  table.add(dave);
-  table.add(dave2);
-
-  std::string copykey = "Dave";
-
-  const Person daveCopy = table.get(copykey);
-
-  if (table.get(copykey).isNull())
-    std::cout << "NULL" << std::endl;
+  if (addGetTest())
+    std::cout << "Adding and Getting Pass" << std::endl;
   else
-    std::cout << "Dave's here" << std::endl;
+    std::cout << "Adding and Getting Fail" << std::endl;
 
-  table.remove(copykey);
+  if (collisionTest())
+    std::cout << "Collision Pass" << std::endl;
+  else
+    std::cout << "Collision Fail" << std::endl;
 
-  if (table.get(copykey).isNull())
-    std::cout << "Dave's not here man" << std::endl;
+  if (removeTest())
+    std::cout << "Remove Pass" << std::endl;
+  else
+    std::cout << "Remove Fail" << std::endl;
 
   return EXIT_SUCCESS;
 }
