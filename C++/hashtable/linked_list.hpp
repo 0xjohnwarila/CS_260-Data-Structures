@@ -106,7 +106,7 @@ class LinkedList {
   }
 
   Node *head;
-  int listLength;
+  size_t listLength;
 
  public:
   // Constructor
@@ -120,10 +120,17 @@ class LinkedList {
   T get(int pos);
   T remove(int pos);
 
+  size_t size(void);
+
   // Iterator stuff (aka the begin and end methods needed...)
   Iterator begin() { return Iterator(head->next); }
   Iterator end() { return Iterator(head); }
 };
+
+template <class T>
+size_t LinkedList<T>::size(void) {
+  return listLength;
+}
 
 /*
 PUBLIC METHOD: append(T inVal)

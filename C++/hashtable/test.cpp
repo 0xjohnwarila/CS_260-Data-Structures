@@ -26,6 +26,7 @@ bool addGetTest(void) {
 
   bool passing = true;
 
+  // Lambda's are pretty neat
   auto keysMissMatch = [](std::string key1, std::string key2) { return !(key1 == key2); };
   auto gpaMissMatch = [](float gpa1, float gpa2) { return !(gpa1 == gpa2); };
 
