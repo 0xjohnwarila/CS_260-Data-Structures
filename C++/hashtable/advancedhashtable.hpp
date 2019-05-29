@@ -6,8 +6,14 @@
 #include <iostream>
 #include <vector>
 
+#include "fnv.h"
 #include "linked_list.hpp"
 #include "person.hpp"
+
+struct depthIndex {
+  size_t index;
+  size_t depth;
+};
 
 template <class T>
 class AdvancedHashTable {
@@ -20,6 +26,7 @@ class AdvancedHashTable {
   std::vector<LinkedList<T>> table;
 
   size_t hash(const std::string key, size_t size) const;
+  depthIndex find(const std::string key) const;
   bool indexFull(size_t index, const T& inObject) const;
   bool isCorrectIndex(std::string key, size_t index) const;
   void createTable(size_t size);
@@ -102,6 +109,9 @@ template <class T>
 T AdvancedHashTable<T>::get(std::string key) const {
   // Find the index to get
   // Return it
+  depthIndex dIndex = find(key);
+  if (dIndex.index != size_)
+    return table.at(dIndex.index).get(dIndex.depth);
 }
 
 //
@@ -110,8 +120,21 @@ T AdvancedHashTable<T>::get(std::string key) const {
 //
 
 template <class T>
+depthIndex AdvancedHashTable<T>::find(const std::string key) const {
+  size_t hashVal = hash(key);
+  LinkedList& currentList = table.at(hashVal);
+
+  for (size_t depth = 0; depth < currentList.size(); depth++) {
+    if (currentList.get(depth).key() == key) {
+      return {hashVal, depth};
+    }
+  }
+}
+
+template <class T>
 size_t AdvancedHashTable<T>::hash(const std::string key, size_t size) const {
-  // Use a good hash function here
+  uint32_t hashReturn = FNV::fnv1a(key);
+  return hashReturn % size;
 }
 
 template <class T>
