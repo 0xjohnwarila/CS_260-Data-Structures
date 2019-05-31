@@ -33,6 +33,7 @@ class AdvancedHashTable {
   void insert(const size_t index, const T& inObject);
   void collision(const size_t index, const T& inObject);
   void removeFromTable(size_t index);
+  void setNull(depthIndex dIndex);
 
  public:
   // The constructor requires a size for the table
@@ -103,6 +104,9 @@ template <class T>
 void AdvancedHashTable<T>::remove(std::string key) {
   // Find the index of the object to be removed
   // Replace it with nullObject
+  depthIndex dIndex = find(key);
+  if (dIndex.index != size_)
+      setNull(dIndex);
 }
 
 template <class T>
@@ -122,7 +126,7 @@ T AdvancedHashTable<T>::get(std::string key) const {
 template <class T>
 depthIndex AdvancedHashTable<T>::find(const std::string key) const {
   size_t hashVal = hash(key);
-  LinkedList& currentList = table.at(hashVal);
+  LinkedList<T>& currentList = table.at(hashVal);
 
   for (size_t depth = 0; depth < currentList.size(); depth++) {
     if (currentList.get(depth).key() == key) {
@@ -151,4 +155,9 @@ void AdvancedHashTable<T>::insert(const size_t index, const T& inObject) {
     if (isCopy(currentObject, inObject))
       return;
   }
+}
+
+template <class T>
+void AdvancedHashTable<T>::setNull(depthIndex dIndex) {
+  table.at(dIndex.index).get(dIndex.depth) = T(true);
 }

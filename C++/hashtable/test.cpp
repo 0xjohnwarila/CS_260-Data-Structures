@@ -1,5 +1,5 @@
 #include "test.hpp"
-#include "hashtable.hpp"
+#include "advancedhashtable.hpp"
 #include "person.hpp"
 
 bool addGetTest(void) {
@@ -9,7 +9,7 @@ bool addGetTest(void) {
 
   size_t size = 10;
 
-  HashTable<Person> table = HashTable<Person>(size);
+  AdvancedHashTable<Person> table = AdvancedHashTable<Person>(size);
 
   table.add(testPerson1);
   table.add(testPerson2);
@@ -55,7 +55,7 @@ bool collisionTest(void) {
 
   size_t size = 10;
 
-  HashTable<Person> table = HashTable<Person>(size);
+  AdvancedHashTable<Person> table = AdvancedHashTable<Person>(size);
   table.add(testPerson1);
   table.add(testPerson2);
   table.add(testPerson3);
@@ -79,7 +79,7 @@ bool removeTest(void) {
 
   size_t size = 10;
 
-  HashTable<Person> table = HashTable<Person>(size);
+  AdvancedHashTable<Person> table = AdvancedHashTable<Person>(size);
 
   table.add(testPerson1);
   table.add(testPerson2);
