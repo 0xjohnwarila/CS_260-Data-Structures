@@ -48,7 +48,7 @@ class AdvancedHashTable {
 
   void add(const T& inObject);
   void remove(std::string key);
-  T get(std::string key) const;
+  T get(std::string key);
 };
 
 //
@@ -95,6 +95,7 @@ float AdvancedHashTable<T>::loadFactor(void) const {
 // ADD DOCUMENTATION HERE JOHN. BEFORE YOU TURN IT IN
 template <class T>
 void AdvancedHashTable<T>::add(const T& inObject) {
+  std::cout << "Adding " << inObject.key() << std::endl;
   const std::string key = inObject.key();
   size_t index = hash(key, size_);
   insert(index, inObject);
@@ -106,16 +107,20 @@ void AdvancedHashTable<T>::remove(std::string key) {
   // Replace it with nullObject
   depthIndex dIndex = find(key);
   if (dIndex.index != size_)
-      setNull(dIndex);
+    setNull(dIndex);
 }
 
 template <class T>
-T AdvancedHashTable<T>::get(std::string key) const {
+T AdvancedHashTable<T>::get(std::string key) {
   // Find the index to get
   // Return it
+  std::cout << "Getting " << key << std::endl;
   depthIndex dIndex = find(key);
+  T returnPerson = T(true);
   if (dIndex.index != size_)
-    return table.at(dIndex.index).get(dIndex.depth);
+    returnPerson = table.at(dIndex.index).get(dIndex.depth);
+
+  return returnPerson;
 }
 
 //
@@ -124,15 +129,34 @@ T AdvancedHashTable<T>::get(std::string key) const {
 //
 
 template <class T>
-depthIndex AdvancedHashTable<T>::find(const std::string key) const {
-  size_t hashVal = hash(key);
-  LinkedList<T>& currentList = table.at(hashVal);
+void AdvancedHashTable<T>::createTable(size_t size) {
+  for (size_t i = 0; i < size; i++) {
+    table.push_back(LinkedList<T>());
+  }
+}
 
+template <class T>
+depthIndex AdvancedHashTable<T>::find(const std::string key) const {
+  std::cout << "Finding " << key << std::endl;
+  size_t hashVal = hash(key, size_);
+  std::cout << key << "'s hash is " << hashVal << std::endl;
+  LinkedList<T> currentList = table.at(hashVal);
+  size_t i = 0;
+  for (auto&& j : currentList) {
+    std::cout << "Stepping one down list" << std::endl;
+    i++;
+  }
+
+  size_t listSize = i;
+  std::cout << listSize << std::endl;
   for (size_t depth = 0; depth < currentList.size(); depth++) {
+    std::cout << "Checking list " << hashVal << " at depth " << depth << ". It is: " << currentList.get(depth).key() << std::endl;
     if (currentList.get(depth).key() == key) {
       return {hashVal, depth};
     }
   }
+  std::cout << "Did not find " << key << std::endl;
+  return {size_, 0};
 }
 
 template <class T>
@@ -143,8 +167,8 @@ size_t AdvancedHashTable<T>::hash(const std::string key, size_t size) const {
 
 template <class T>
 void AdvancedHashTable<T>::insert(const size_t index, const T& inObject) {
-  auto isCopy = [](T& obj1, T& obj2) { return (obj1.key() == obj2.key()); };
   T currentObject;
+  auto isCopy = [](const T& obj1, const T& obj2) { return (obj1.key() == obj2.key()); };
   for (size_t depth = 0; depth < table.at(index).size(); depth++) {
     currentObject = table.at(index).get(depth);
     if (currentObject.isNull()) {
@@ -152,6 +176,7 @@ void AdvancedHashTable<T>::insert(const size_t index, const T& inObject) {
       table.at(index).insert(inObject, depth);
       return;
     }
+
     if (isCopy(currentObject, inObject))
       return;
   }

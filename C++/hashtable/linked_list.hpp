@@ -1,3 +1,7 @@
+
+
+#include <iostream>
+
 /*
 This ADT is a linked list, more specifically this is a doubly linked list as the nodes have
 next AND previous node pointers.
@@ -94,23 +98,31 @@ class LinkedList {
   };
 
   // Traces through the list. COMPLEXITY O(n)
-  Node *trace(int pos) {
+  Node *trace(size_t pos) {
     if (pos > listLength - 1)
       return head;
 
     Node *currentNode = head;
-    for (int i = 0; i < pos + 1; i++) {
+    for (size_t i = 0; i < pos + 1; i++) {
       currentNode = currentNode->next;
     }
     return currentNode;
   }
 
+  void updateNumObj(bool add) {
+    if (add)
+      numberOfObjects = numberOfObjects + 1;
+    else
+      numberOfObjects = numberOfObjects - 1;
+  }
+
   Node *head;
   size_t listLength;
+  size_t numberOfObjects;
 
  public:
   // Constructor
-  LinkedList() : head(new Node()), listLength(0) {}
+  LinkedList() : head(new Node()), listLength(128) { numberOfObjects = 0; }
 
   // Public methods
   void insert(T inVal, int pos);
@@ -129,7 +141,8 @@ class LinkedList {
 
 template <class T>
 size_t LinkedList<T>::size(void) {
-  return listLength;
+  std::cout << numberOfObjects << std::endl;
+  return numberOfObjects;
 }
 
 /*
@@ -142,7 +155,7 @@ COMPLEXITY: O(1)
 template <class T>
 void LinkedList<T>::append(T inVal) {
   (new Node(inVal))->insert(head);
-  listLength++;
+  updateNumObj(true);
 }
 
 /*
@@ -171,7 +184,7 @@ T LinkedList<T>::remove(int pos) {
   T tempVal = temp->value;
   temp->remove();
   delete temp;
-  listLength--;
+  updateNumObj(false);
   return tempVal;
 }
 
@@ -185,7 +198,7 @@ COMPLEXITY: O(1)
 template <class T>
 void LinkedList<T>::insert(T inVal) {
   (new Node(inVal))->insert(head->next);
-  listLength++;
+  updateNumObj(true);
 }
 
 /*
@@ -201,5 +214,5 @@ COMPLEXITY: O(n)
 template <class T>
 void LinkedList<T>::insert(T inVal, int pos) {
   (new Node(inVal))->insert(trace(pos));
-  listLength++;
+  updateNumObj(true);
 }

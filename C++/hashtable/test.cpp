@@ -2,6 +2,8 @@
 #include "advancedhashtable.hpp"
 #include "person.hpp"
 
+#include <iostream>
+
 bool addGetTest(void) {
   const Person testPerson1 = Person("Dave", 3.6);
   const Person testPerson2 = Person("Mike", 2.8);
@@ -10,11 +12,11 @@ bool addGetTest(void) {
   size_t size = 10;
 
   AdvancedHashTable<Person> table = AdvancedHashTable<Person>(size);
-
+  std::cout << "Made Advanced Hash Table" << std::endl;
   table.add(testPerson1);
   table.add(testPerson2);
   table.add(testPerson3);
-
+  std::cout << "Added People" << std::endl;
   std::vector<Person> returnData;
 
   if (!table.get("Dave").isNull())
@@ -44,6 +46,8 @@ bool addGetTest(void) {
     passing = false;
   if (!(table.get("Not In Table").isNull()))
     passing = false;
+
+  std::cout << "Tested" << std::endl;
 
   return passing;
 }
