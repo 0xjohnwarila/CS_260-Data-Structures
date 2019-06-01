@@ -137,6 +137,7 @@ void AdvancedHashTable<T>::createTable(size_t size) {
 template <class T>
 depthIndex AdvancedHashTable<T>::find(const std::string key) const {
   size_t hashVal = hash(key, size_);
+  std::cout << key << "'s Hash is : " << hashVal << std::endl;
   size_t depth = 0;
   std::vector<T> currentList = table.at(hashVal);
   for (auto&& i : currentList) {
