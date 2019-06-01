@@ -95,7 +95,6 @@ float AdvancedHashTable<T>::loadFactor(void) const {
 // ADD DOCUMENTATION HERE JOHN. BEFORE YOU TURN IT IN
 template <class T>
 void AdvancedHashTable<T>::add(const T& inObject) {
-  std::cout << "Adding " << inObject.key() << std::endl;
   const std::string key = inObject.key();
   size_t index = hash(key, size_);
   insert(index, inObject);
@@ -114,7 +113,6 @@ template <class T>
 T AdvancedHashTable<T>::get(std::string key) {
   // Find the index to get
   // Return it
-  std::cout << "Getting " << key << std::endl;
   depthIndex dIndex = find(key);
   T returnPerson = T(true);
   if (dIndex.index != size_)
@@ -132,20 +130,19 @@ template <class T>
 void AdvancedHashTable<T>::createTable(size_t size) {
   for (size_t i = 0; i < size; i++) {
     table.push_back(std::vector<T>());
+    table.at(i).push_back(T(true));
   }
 }
 
 template <class T>
 depthIndex AdvancedHashTable<T>::find(const std::string key) const {
-  std::cout << "Finding " << key << std::endl;
   size_t hashVal = hash(key, size_);
-  std::cout << key << "'s hash is " << hashVal << std::endl;
+  size_t depth = 0;
   std::vector<T> currentList = table.at(hashVal);
-  for (size_t depth = 0; depth < currentList.size(); depth++) {
-    std::cout << "Checking list " << hashVal << " at depth " << depth << ". It is: " << currentList.at(depth).key() << std::endl;
-    if (currentList.at(depth).key() == key) {
+  for (auto&& i : currentList) {
+    if (i.key() == key)
       return {hashVal, depth};
-    }
+    depth++;
   }
   std::cout << "Did not find " << key << std::endl;
   return {size_, 0};
