@@ -1,4 +1,7 @@
 // Advanced hashtable, fancy collision avoidance, chaining and good hash function.
+// With perfect data, most of the primary methods (add, get, remove) would go from a O(n) to O(1)
+// But in worse case, most methods are O(n). This is probably not going to be seen in real world use
+// because the hashing function used is fairly decent, and the chains won't be too deep.
 
 #pragma once
 
