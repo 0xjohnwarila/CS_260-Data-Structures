@@ -2,8 +2,6 @@
 
 #pragma once
 
-#include <array>
-#include <iostream>
 #include <vector>
 
 #include "person.hpp"
@@ -172,7 +170,6 @@ size_t HashTable<T>::walk(std::string key, size_t index) const {
       return i;
   }
 
-  std::cerr << "Key not found" << std::endl;
   return size_;
 }
 
@@ -227,8 +224,6 @@ void HashTable<T>::collision(const size_t index, const T& inObject) {
       return;
     }
   }
-
-  std::cerr << "No room for object" << std::endl;
 }
 
 // Hash function. Sums all char in key, then mods size. This is terrible, but useful for testing
