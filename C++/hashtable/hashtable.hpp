@@ -6,7 +6,6 @@
 #include <iostream>
 #include <vector>
 
-#include "linked_list.hpp"
 #include "person.hpp"
 
 template <class T>

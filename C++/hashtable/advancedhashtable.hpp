@@ -1,7 +1,8 @@
 // Advanced hashtable, fancy collision avoidance, chaining and good hash function.
 // With perfect data, most of the primary methods (add, get, remove) would go from a O(n) to O(1)
 // But in worse case, most methods are O(n). This is probably not going to be seen in real world use
-// because the hashing function used is fairly decent, and the chains won't be too deep.
+// because the hashing function used is fairly decent but not great, and the chaining is not the
+// most advanced.
 
 #pragma once
 
@@ -10,7 +11,6 @@
 #include <vector>
 
 #include "fnv.h"
-#include "linked_list.hpp"
 #include "person.hpp"
 
 // Quick and dirty storage method for the index and depth an object is stored at

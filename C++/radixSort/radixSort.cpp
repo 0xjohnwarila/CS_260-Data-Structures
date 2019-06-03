@@ -17,7 +17,8 @@ void subSort(int arr[], int size, int exponent) {
     temp[temp2[(arr[i] / exponent) % 10] - 1] = arr[i];
     temp2[(arr[i] / exponent) % 10]--;
   }
-
+  
+  // Copy temp to arr
   for (int i = 0; i < size; i++) {
     arr[i] = temp[i];
   }
@@ -35,6 +36,10 @@ int getMaxVal(int arr[], int size) {
 }
 
 // for every level of exponent (1, 10 , 100) run the sub sort on list
+// looks like this will be O(n*m) where n is the number of values in our array, and m is the
+// number of exponents we have to go down.
+// I think I will work on this implementation to cut down the runtime of the countSort,
+// there maybe some ineffiecient looping there...
 void sort(int inArr[], int size) {
   int max = getMaxVal(inArr, size);
 
