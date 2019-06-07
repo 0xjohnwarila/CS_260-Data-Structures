@@ -1,0 +1,13 @@
+Requirements from Joseph
+  -Testing First
+  -Implement a graph class with at least
+    -A method to add a new node to the graph addNode(nodeName)
+    -A method to add a new path between two nodes of the graph addPath(src, dest)
+    -A method to find the shortest path shortestPath(src, dest)
+    -A method to find minimum spanning tree minSpanTree()
+  -Complexity analysis
+
+Ideas
+  Remember if the shortest paths have been found, store them. If a new path or node has
+    been added, recreate the shortest paths.
+
