@@ -1,5 +1,6 @@
 #pragma once
 
+#include <map>
 #include <utility>
 #include <vector>
 
@@ -113,6 +114,13 @@ class Path {
 template <class T>
 class Graph {
  private:
+  // nodes_ vector of Node<T>* that are in the graph
+  std::vector<Node<T>*> nodes_;
+  // Map of all Path<T> between each pair of Node<T>* in the graph
+  std::map<std::pair<Node<T>*, Node<T>*>, Path<T>> shortestPaths_;
+  // Current minimum spanning tree of the graph
+  Path<T> minSpanningTree_;
+
  public:
   Graph(void);
 
@@ -121,6 +129,8 @@ class Graph {
   bool addPath(Node<T>* sourceNode, Node<T>* destinationNode);
   // Path returning methods
   Path<T> getShortestPath(Node<T>* sourceNode, Node<T>* destinationNode);
-  Path<T> getMinSpanningTree(void);
+  Path<T> getMinSpanningTree(void) const {
+    return minSpanningTree_;
+  }
 };
 }  // namespace graph
