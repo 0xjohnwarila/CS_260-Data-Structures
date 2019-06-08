@@ -1,5 +1,6 @@
 #pragma once
 
+#include <algorithm>
 #include <map>
 #include <utility>
 #include <vector>
@@ -12,12 +13,14 @@ class Node {
  private:
   int id_;
   size_t numberOfConnections_;
+  bool isNull_;
   T value_;
 
   std::vector<Node<T>*> connections_;
 
  public:
   Node() : Node(T()) {}
+  Node(bool isNull) : isNull_(isNull) {}
   Node(T value, int id) : value_(value), id_(id) {}
 
   void addConnection(Node* connectingNode, bool originalCall) {
@@ -61,6 +64,10 @@ class Node {
 
   T value(void) const {
     return value_;
+  }
+
+  bool isNull(void) const {
+    return isNull_;
   }
 
   size_t numberOfConnections(void) const {
@@ -125,12 +132,29 @@ class Graph {
   Graph(void);
 
   // Graph building methods
-  bool addNode(Node<T>* inputNode);
+  bool addNode(Node<T>* inputNode) {
+    // null checking
+    if (inputNode->isNull())
+      return false;
+
+    // checking for clones
+    if (std::find(nodes_.begin(), nodes_.end(), inputNode) != nodes_.end())
+      return false;
+
+    // adding
+    nodes_.pushback(inputNode);
+    return true;
+  }
   bool addPath(Node<T>* sourceNode, Node<T>* destinationNode);
   // Path returning methods
   Path<T> getShortestPath(Node<T>* sourceNode, Node<T>* destinationNode);
   Path<T> getMinSpanningTree(void) const {
     return minSpanningTree_;
   }
+
+ private:
+  // Private methods
+  void buildMinSpanTree(void);
+  void buildShortestPaths(void);
 };
 }  // namespace graph
