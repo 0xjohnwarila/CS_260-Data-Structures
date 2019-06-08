@@ -49,7 +49,7 @@ class Node {
   void removeAllConnections(void) {
     // Increment through connections_ and remove each
     for (auto&& currentNode : connections_) {
-      this.removeConnection(currentNode);
+      removeConnection(currentNode);
     }
   }
 
@@ -93,6 +93,10 @@ class Path {
   std::pair<Node<T>*, Node<T>*> step(size_t stepNumber) const {
     return steps_.at(stepNumber);
   }
+};
+
+template <class T>
+class Tree {
 };
 
 template <class T>
