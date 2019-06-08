@@ -74,14 +74,25 @@ class Node {
 template <class T>
 class Path {
  private:
+  bool isNull_;
   Node<T>* source_;
   Node<T>* destination_;
   std::vector<std::pair<Node<T>*, Node<T>*>> steps_;
 
  public:
+  // Empty constructor
   Path() : Path(T()) {}
+  // Null Object constructor
+  Path(bool isNull) : isNull_(isNull) {}
+  // Standard constructor
   Path(Node<T>* source, Node<T>* destination) : source_(source), destination_(destination) {}
 
+  // Add a pair of nodes representing an edge to the steps_ vector
+  void addStep(Node<T>* source, Node<T>* destination) {
+    steps_.push_back(std::pair<Node<T>*, Node<T>*>(source, destination));
+  }
+
+  // Getters
   Node<T>* source(void) const {
     return source_;
   }
@@ -93,10 +104,10 @@ class Path {
   std::pair<Node<T>*, Node<T>*> step(size_t stepNumber) const {
     return steps_.at(stepNumber);
   }
-};
 
-template <class T>
-class Tree {
+  bool isNull(void) const {
+    return isNull_;
+  }
 };
 
 template <class T>
@@ -105,9 +116,11 @@ class Graph {
  public:
   Graph(void);
 
+  // Graph building methods
   bool addNode(Node<T>* inputNode);
   bool addPath(Node<T>* sourceNode, Node<T>* destinationNode);
+  // Path returning methods
   Path<T> getShortestPath(Node<T>* sourceNode, Node<T>* destinationNode);
-  Tree getMinSpanningTree(void);
+  Path<T> getMinSpanningTree(void);
 };
 }  // namespace graph
