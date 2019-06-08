@@ -8,6 +8,15 @@
 // Graph namespace, has nodes and graphs
 namespace graph {
 
+/*
+Node Class
+
+Used as the nodes of a graph. Stores a value of any type, and a vector of connections to other
+nodes.
+
+Can remove its connections.
+
+*/
 template <class T>
 class Node {
  private:
@@ -79,6 +88,12 @@ class Node {
   }
 };
 
+/*
+Path class
+
+Used to store a series of steps between nodes.
+
+*/
 template <class T>
 class Path {
  private:
@@ -118,6 +133,15 @@ class Path {
   }
 };
 
+/*
+Graph Class
+
+Holds information about a set of connected nodes. Can add more nodes and the connections between
+them.
+
+Generates Paths for shortest paths and minimum spanning tree.
+
+*/
 template <class T>
 class Graph {
  private:
