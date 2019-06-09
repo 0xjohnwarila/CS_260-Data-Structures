@@ -36,14 +36,6 @@ class Node {
   Node(T value, int id) : value_(value), id_(id) {}
 
   void addConnection(Node* connectingNode, int weight, bool originalCall = true) {
-    // check for null
-    if (connectingNode->isNull())
-      return;
-
-    // check that connecting node is not already connected
-    if (findInVector(connections_, connectingNode).first())
-      return;
-
     // add the connection
     connections_.pushback(connectingNode);
     weightedConnections_.pushback(std::pair<Node*, int>(connectingNode, weight));
@@ -190,7 +182,7 @@ class Graph {
     return true;
   }
 
-  bool addPath(Node<T>* sourceNode, Node<T>* destinationNode) {
+  bool addPath(Node<T>* sourceNode, Node<T>* destinationNode, int weight) {
     // null checking
     if (sourceNode->isNull() || destinationNode->isNull())
       return false;
@@ -200,7 +192,7 @@ class Graph {
       return false;
 
     // add connection
-    sourceNode->addConnection(destinationNode);
+    sourceNode->addConnection(destinationNode, weight);
 
     // build shortest path map
     buildShortestPaths();
@@ -236,7 +228,8 @@ class Graph {
   void buildMinSpanTree(void) {
   }
 
-  void buildShortestPaths(void);
+  void buildShortestPaths(void) {
+  }
 };
 
 }  // namespace graph
