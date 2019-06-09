@@ -28,16 +28,25 @@ class Node {
   T value_;
 
   std::vector<Node<T>*> connections_;
+  std::vector<std::pair<Node*, int>> weightedConnections_;
 
  public:
   Node() : Node(T()) {}
   Node(bool isNull) : isNull_(isNull) {}
   Node(T value, int id) : value_(value), id_(id) {}
 
-  void addConnection(Node* connectingNode, bool originalCall = true) {
-    numberOfConnections_++;
-    // Add the connectingNode to connections_
-    connections_.push_back(connectingNode);
+  void addConnection(Node* connectingNode, int weight, bool originalCall = true) {
+    // check for null
+    if (connectingNode->isNull())
+      return;
+
+    // check that connecting node is not already connected
+    if (findInVector(connections_, connectingNode).first())
+      return;
+
+    // add the connection
+    connections_.pushback(connectingNode);
+    weightedConnections_.pushback(std::pair<Node*, int>(connectingNode, weight));
 
     // If this is the original call of the method, call addConnection on the connectingNode
     if (originalCall)
@@ -52,10 +61,13 @@ class Node {
     */
 
     std::pair<bool, int> connection = findInVector(connections_, connectingNode);
-    if (connection.first())
+
+    if (connection.first()) {
       connections_.erase(connection.second());
-    else
+      weightedConnections_.erase(connection.second());
+    } else {
       return;
+    }
 
     // If this is the original call of the method, call removeConnection on the connectingNode
     if (originalCall)
@@ -221,7 +233,9 @@ class Graph {
 
  private:
   // Private methods
-  void buildMinSpanTree(void);
+  void buildMinSpanTree(void) {
+  }
+
   void buildShortestPaths(void);
 };
 
