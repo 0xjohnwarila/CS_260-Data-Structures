@@ -1,6 +1,7 @@
 #pragma once
 
 #include <algorithm>
+#include <iostream>
 #include <map>
 #include <utility>
 #include <vector>
@@ -227,6 +228,8 @@ class Graph {
   Path<T> minSpanningTree_;
   int nextId;
 
+  bool isFullyConnected_;
+
  public:
   Graph(void) : nextId(0){};
 
@@ -259,8 +262,10 @@ class Graph {
     sourceNode->addConnection(destinationNode, weight);
     edges_.pushback(Edge(sourceNode, destinationNode, weight));
 
-    // build shortest path map
-    buildShortestPaths();
+    // build shortest path map if the graph is fully connected
+    fullyConnected();
+    if (isFullyConnected())
+      buildShortestPaths();
 
     // build min spanning tree
     buildMinSpanTree();
@@ -288,6 +293,11 @@ class Graph {
     return minSpanningTree_;
   }
 
+  // Getter
+  bool isFullyConnected(void) const {
+    return isFullyConnected_;
+  }
+
  private:
   // Private methods
   void buildShortestPaths(void) {
@@ -301,6 +311,32 @@ class Graph {
     for (auto&& edge : edges_) {
       if (!minSpanningTree_.loop(edge))
         minSpanningTree_.addStep(edge);
+    }
+  }
+
+  // O(n^2)
+  void fullyConnected(void) const {
+    std::vector<Node<T>*> visitedNodes;
+
+    Node<T>* currentNode = nodes_.at(0);
+
+    for (size_t i = 0; i < currentNode->numberOfConnections(); i++) {
+      if (!inVector(visitedNodes, currentNode->connectionAt(i)))
+        visitNode(currentNode->connectionAt(i));
+    }
+
+    if (std::is_permutation(visitedNodes.begin(), visitedNodes.end(), nodes_.begin()))
+      isFullyConnected = true;
+    else
+      isFullyConnected = false;
+  }
+
+  void visitNode(Node<T>* node, std::vector<Node<T>*>& visitedNodes) {
+    visitedNodes.pushback(node);
+
+    for (size_t i = 0; i < node->numberOfConnections(); i++) {
+      if (!inVector(visitedNodes, node->connectionAt(i)).first)
+        visitNode(node->connectionsAt(i));
     }
   }
 };
