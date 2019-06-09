@@ -45,9 +45,11 @@ class Node {
   }
 
   void removeConnection(Node* connectingNode, bool originalCall = true) {
-    // There is an argument to be made that because we are using .erase and std::find it may be
-    // better to switch to a list instead of a vector. But I think if we ask for connections more
-    // than we delete connections, it will be better to leave it.
+    /*
+    There is an argument to be made that because we are using .erase and std::find it may be
+    better to switch to a list instead of a vector. But I think if we ask for connections more
+    than we delete connections, it will be better to leave it.
+    */
 
     std::pair<bool, int> connection = findInVector(connections_, connectingNode);
     if (connection.first())
@@ -199,11 +201,18 @@ class Graph {
 
   // Path returning methods
   Path<T> getShortestPath(Node<T>* sourceNode, Node<T>* destinationNode) const {
+    // If there is some error getting the path, return a nullObject
+
     // null checking
+    if (sourceNode->isNull() || destinationNode->isNull())
+      return Path(true);
 
     // checking that nodes are in the graph
+    if (!(findInVector(nodes_, sourceNode).first() && findInVector(destinationNode).first()))
+      return Path(true);
 
     // return the value from the map of paths based off the pair of sourceNode and destinationNode
+    return shortestPaths_[std::pair<Node<T>*, Node<T>*>(sourceNode, destinationNode)];
   }
 
   Path<T> getMinSpanningTree(void) const {
