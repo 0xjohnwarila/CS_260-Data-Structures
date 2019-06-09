@@ -50,7 +50,7 @@ class Node {
 
     // If this is the original call of the method, call addConnection on the connectingNode
     if (originalCall)
-      connectingNode->addConnection(this, false);
+      connectingNode->addConnection(this, weight, false);
   }
 
   void removeConnection(Node* connectingNode, bool originalCall = true) {
