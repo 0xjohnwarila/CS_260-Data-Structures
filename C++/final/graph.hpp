@@ -72,6 +72,10 @@ class Node {
       removeConnection(currentNode);
     }
   }
+  // Setters
+  void setId(int id) {
+    id_ = id;
+  }
 
   // Getters
   int id(void) const {
@@ -100,6 +104,53 @@ class Node {
 };
 
 /*
+Edge Class
+
+Stores a source, destination, and weight.
+Has methods to check for connectivity, and overloaded > and < operators
+
+*/
+
+template <class T>
+class Edge {
+ private:
+  Node<T>* source_;
+  Node<T>* destination_;
+  int weight_;
+
+ public:
+  // Constructor
+  Edge(void) : Edge(T()){};
+  Edge(Node<T>* source, Node<T>* destination, int weight) : source_(source), destination_(destination), weight_(weight) {}
+
+  bool isConnected(Edge otherEdge) {
+    return (source_->isConnected(otherEdge.source()) || destination_->isConnected(otherEdge.destination()));
+  }
+
+  // Getters
+  Node<T>* source(void) const {
+    return source_;
+  }
+
+  Node<T>* destination(void) const {
+    return destination_;
+  }
+
+  int weight(void) const {
+    return weight_;
+  }
+
+  // Operator Overloading
+  bool operator>(const Edge& otherEdge) {
+    return weight_ > otherEdge.weight();
+  }
+
+  bool operator<(const Edge& otherEdge) {
+    return weight_ < otherEdge.weight();
+  }
+};
+
+/*
 Path class
 
 Used to store a series of steps between nodes.
@@ -111,7 +162,7 @@ class Path {
   bool isNull_;
   Node<T>* source_;
   Node<T>* destination_;
-  std::vector<std::pair<Node<T>*, Node<T>*>> steps_;
+  std::vector<Edge<T>> steps_;
 
  public:
   // Empty constructor
@@ -122,8 +173,17 @@ class Path {
   Path(Node<T>* source, Node<T>* destination) : source_(source), destination_(destination) {}
 
   // Add a pair of nodes representing an edge to the steps_ vector
-  void addStep(Node<T>* source, Node<T>* destination) {
-    steps_.push_back(std::pair<Node<T>*, Node<T>*>(source, destination));
+  void addStep(Edge<T> edge) {
+    steps_.push_back(edge);
+  }
+
+  bool loop(Edge<T>* edge) const {
+    for (auto&& currentEdge : steps_) {
+      if (edge->isConnected(currentEdge))
+        return true;
+    }
+
+    return false;
   }
 
   // Getters
@@ -159,13 +219,16 @@ class Graph {
   // nodes_ vector of Node<T>* that are in the graph
   // Implementation Note: This might be changed to a set later. Depends on how I use it...
   std::vector<Node<T>*> nodes_;
+  // Vector of all edges in the graph. edges are a pair of int and pair nodes
+  std::vector<Edge<T>*> edges_;
   // Map of all Path<T> between each pair of Node<T>* in the graph
   std::map<std::pair<Node<T>*, Node<T>*>, Path<T>> shortestPaths_;
   // Current minimum spanning tree of the graph
   Path<T> minSpanningTree_;
+  int nextId;
 
  public:
-  Graph(void);
+  Graph(void) : nextId(0){};
 
   // Graph building methods; returns true if successfully added, false if not
   bool addNode(Node<T>* inputNode) {
@@ -178,6 +241,7 @@ class Graph {
       return false;
 
     // adding
+    inputNode->setId(nextId++);
     nodes_.pushback(inputNode);
     return true;
   }
@@ -193,6 +257,7 @@ class Graph {
 
     // add connection
     sourceNode->addConnection(destinationNode, weight);
+    edges_.pushback(Edge(sourceNode, destinationNode, weight));
 
     // build shortest path map
     buildShortestPaths();
@@ -225,10 +290,18 @@ class Graph {
 
  private:
   // Private methods
-  void buildMinSpanTree(void) {
+  void buildShortestPaths(void) {
   }
 
-  void buildShortestPaths(void) {
+  void buildMinSpanTree(void) {
+    // sort edges
+    std::sort(edges_.begin(), edges_.end());
+
+    // loop through the next smallest edges, adding if it does not create a loop
+    for (auto&& edge : edges_) {
+      if (!minSpanningTree_.loop(edge))
+        minSpanningTree_.addStep(edge);
+    }
   }
 };
 
