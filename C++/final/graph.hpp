@@ -5,6 +5,8 @@
 #include <utility>
 #include <vector>
 
+#include "utils.hpp"
+
 // Graph namespace, has nodes and graphs
 namespace graph {
 
@@ -32,7 +34,7 @@ class Node {
   Node(bool isNull) : isNull_(isNull) {}
   Node(T value, int id) : value_(value), id_(id) {}
 
-  void addConnection(Node* connectingNode, bool originalCall) {
+  void addConnection(Node* connectingNode, bool originalCall = true) {
     numberOfConnections_++;
     // Add the connectingNode to connections_
     connections_.push_back(connectingNode);
@@ -42,17 +44,16 @@ class Node {
       connectingNode->addConnection(this, false);
   }
 
-  void removeConnection(Node* connectingNode, bool originalCall) {
-    // Increment through connections list until connecting node, then replace with nullptr
-    for (size_t i = 0; i < connections_.size(); i++) {
-      if (connections_.at(i) == connectingNode) {
-        // There is an argument to be made that because we are using .erase it may be better to
-        // switch to a list instead of a vector. But I think if we ask for connections more than
-        // we delete connections, it will be better to leave it.
-        connections_.erase(i);
-        numberOfConnections_--;
-      }
-    }
+  void removeConnection(Node* connectingNode, bool originalCall = true) {
+    // There is an argument to be made that because we are using .erase and std::find it may be
+    // better to switch to a list instead of a vector. But I think if we ask for connections more
+    // than we delete connections, it will be better to leave it.
+
+    std::pair<bool, int> connection = findInVector(connections_, connectingNode);
+    if (connection.first())
+      connections_.erase(connection.second());
+    else
+      return;
 
     // If this is the original call of the method, call removeConnection on the connectingNode
     if (originalCall)
@@ -77,6 +78,10 @@ class Node {
 
   bool isNull(void) const {
     return isNull_;
+  }
+
+  bool isConnected(Node<T>* otherNode) {
+    return findInVector(connections_, otherNode).first();
   }
 
   size_t numberOfConnections(void) const {
@@ -146,6 +151,7 @@ template <class T>
 class Graph {
  private:
   // nodes_ vector of Node<T>* that are in the graph
+  // Implementation Note: This might be changed to a set later. Depends on how I use it...
   std::vector<Node<T>*> nodes_;
   // Map of all Path<T> between each pair of Node<T>* in the graph
   std::map<std::pair<Node<T>*, Node<T>*>, Path<T>> shortestPaths_;
@@ -155,23 +161,51 @@ class Graph {
  public:
   Graph(void);
 
-  // Graph building methods
+  // Graph building methods; returns true if successfully added, false if not
   bool addNode(Node<T>* inputNode) {
     // null checking
     if (inputNode->isNull())
       return false;
 
     // checking for clones
-    if (std::find(nodes_.begin(), nodes_.end(), inputNode) != nodes_.end())
+    if (findInVector(nodes_, inputNode).first())
       return false;
 
     // adding
     nodes_.pushback(inputNode);
     return true;
   }
-  bool addPath(Node<T>* sourceNode, Node<T>* destinationNode);
+
+  bool addPath(Node<T>* sourceNode, Node<T>* destinationNode) {
+    // null checking
+    if (sourceNode->isNull() || destinationNode->isNull())
+      return false;
+
+    // checking for duplicate connections
+    if (sourceNode->isConnected(destinationNode))
+      return false;
+
+    // add connection
+    sourceNode->addConnection(destinationNode);
+
+    // build shortest path map
+    buildShortestPaths();
+
+    // build min spanning tree
+    buildMinSpanTree();
+
+    return true;
+  }
+
   // Path returning methods
-  Path<T> getShortestPath(Node<T>* sourceNode, Node<T>* destinationNode);
+  Path<T> getShortestPath(Node<T>* sourceNode, Node<T>* destinationNode) const {
+    // null checking
+
+    // checking that nodes are in the graph
+
+    // return the value from the map of paths based off the pair of sourceNode and destinationNode
+  }
+
   Path<T> getMinSpanningTree(void) const {
     return minSpanningTree_;
   }
@@ -181,4 +215,5 @@ class Graph {
   void buildMinSpanTree(void);
   void buildShortestPaths(void);
 };
+
 }  // namespace graph
