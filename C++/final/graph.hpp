@@ -1,8 +1,9 @@
 #pragma once
 
 #include <algorithm>
+#include <array>
 #include <iostream>
-#include <map>
+#include <limits>
 #include <utility>
 #include <vector>
 
@@ -28,18 +29,18 @@ class Node {
   bool isNull_;
   T value_;
 
-  std::vector<Node<T>*> connections_;
+  std::vector<Node*> connections_;
   std::vector<std::pair<Node*, int>> weightedConnections_;
 
  public:
   Node() : Node(T()) {}
   Node(bool isNull) : isNull_(isNull) {}
-  Node(T value, int id) : value_(value), id_(id) {}
+  Node(T value) : value_(value) {}
 
   void addConnection(Node* connectingNode, int weight, bool originalCall = true) {
     // add the connection
-    connections_.pushback(connectingNode);
-    weightedConnections_.pushback(std::pair<Node*, int>(connectingNode, weight));
+    connections_.push_back(connectingNode);
+    weightedConnections_.push_back(std::pair<Node*, int>(connectingNode, weight));
 
     // If this is the original call of the method, call addConnection on the connectingNode
     if (originalCall)
@@ -55,9 +56,9 @@ class Node {
 
     std::pair<bool, int> connection = findInVector(connections_, connectingNode);
 
-    if (connection.first()) {
-      connections_.erase(connection.second());
-      weightedConnections_.erase(connection.second());
+    if (connection.first) {
+      connections_.erase(connection.second);
+      weightedConnections_.erase(connection.second);
     } else {
       return;
     }
@@ -91,8 +92,8 @@ class Node {
     return isNull_;
   }
 
-  bool isConnected(Node<T>* otherNode) {
-    return findInVector(connections_, otherNode).first();
+  bool isConnected(Node* otherNode) {
+    return findInVector(connections_, otherNode).first;
   }
 
   size_t numberOfConnections(void) const {
@@ -101,6 +102,15 @@ class Node {
 
   Node* connectionAt(size_t index) const {
     return connections_.at(index);
+  }
+
+  // Operator Overloading
+  bool operator>(const Node& otherNode) {
+    return id_ > otherNode.id();
+  }
+
+  bool operator<(const Node& otherNode) {
+    return id_ < otherNode.id();
   }
 };
 
@@ -124,8 +134,8 @@ class Edge {
   Edge(void) : Edge(T()){};
   Edge(Node<T>* source, Node<T>* destination, int weight) : source_(source), destination_(destination), weight_(weight) {}
 
-  bool isConnected(Edge otherEdge) {
-    return (source_->isConnected(otherEdge.source()) || destination_->isConnected(otherEdge.destination()));
+  bool isConnected(Edge* otherEdge) {
+    return (source_->isConnected(otherEdge->source()) || destination_->isConnected(otherEdge->destination()));
   }
 
   // Getters
@@ -163,7 +173,7 @@ class Path {
   bool isNull_;
   Node<T>* source_;
   Node<T>* destination_;
-  std::vector<Edge<T>> steps_;
+  std::vector<Edge<T>*> steps_;
 
  public:
   // Empty constructor
@@ -174,7 +184,7 @@ class Path {
   Path(Node<T>* source, Node<T>* destination) : source_(source), destination_(destination) {}
 
   // Add a pair of nodes representing an edge to the steps_ vector
-  void addStep(Edge<T> edge) {
+  void addStep(Edge<T>* edge) {
     steps_.push_back(edge);
   }
 
@@ -222,10 +232,9 @@ class Graph {
   std::vector<Node<T>*> nodes_;
   // Vector of all edges in the graph. edges are a pair of int and pair nodes
   std::vector<Edge<T>*> edges_;
-  // Map of all Path<T> between each pair of Node<T>* in the graph
-  std::map<std::pair<Node<T>*, Node<T>*>, Path<T>> shortestPaths_;
   // Current minimum spanning tree of the graph
   Path<T> minSpanningTree_;
+
   int nextId;
 
   bool isFullyConnected_;
@@ -240,12 +249,12 @@ class Graph {
       return false;
 
     // checking for clones
-    if (findInVector(nodes_, inputNode).first())
-      return false;
+    //if (findInVector(nodes_, inputNode).first)
+    //  return false;
 
     // adding
     inputNode->setId(nextId++);
-    nodes_.pushback(inputNode);
+    nodes_.push_back(inputNode);
     return true;
   }
 
@@ -260,12 +269,8 @@ class Graph {
 
     // add connection
     sourceNode->addConnection(destinationNode, weight);
-    edges_.pushback(Edge(sourceNode, destinationNode, weight));
-
-    // build shortest path map if the graph is fully connected
-    fullyConnected();
-    if (isFullyConnected())
-      buildShortestPaths();
+    auto edge = new Edge<T>(sourceNode, destinationNode, weight);
+    edges_.push_back(edge);
 
     // build min spanning tree
     buildMinSpanTree();
@@ -282,11 +287,19 @@ class Graph {
       return Path(true);
 
     // checking that nodes are in the graph
-    if (!(findInVector(nodes_, sourceNode).first() && findInVector(destinationNode).first()))
+    if (!(findInVector(nodes_, sourceNode).first && findInVector(destinationNode).first))
       return Path(true);
 
-    // return the value from the map of paths based off the pair of sourceNode and destinationNode
-    return shortestPaths_[std::pair<Node<T>*, Node<T>*>(sourceNode, destinationNode)];
+    // Sort nodes by their id
+    std::sort(nodes_.begin(), nodes_.end());
+
+    std::vector<int> distance;
+    std::vector<Node<T>*> predecessor;
+
+    // Run bellman-ford algorithm. Data is stored in distance and predecessor vectors
+    bellmanFord(distance, predecessor, sourceNode);
+
+    return buildPath(distance, predecessor);
   }
 
   Path<T> getMinSpanningTree(void) const {
@@ -299,12 +312,48 @@ class Graph {
   }
 
  private:
-  // Private methods
-  void buildShortestPaths(void) {
+  // Private method
+  void bellmanFord(std::vector<int>& distance, std::vector<Node<T>*>& predecessor, const Node<T>* source) {
+    const size_t size = nodes_.size();
+    // Initialize
+    for (auto&& node : nodes_) {
+      // For every node, the distance is infinity
+      distance.push_back(std::numeric_limits<int>::max());
+      // For every predecessor, fill with nullObject
+      predecessor.push_back(Node<T>(true));
+    }
+
+    // Distance from source to source is 0
+    distance.at(source->id()) = 0;
+
+    // Relax edges
+    for (size_t i = 0; i < size; i++) {
+      for (auto&& edge : edges_) {
+        if ((distance.at(edge.source() + edge.weight()) < distance.at(edge.destination()))) {
+          distance.at(edge.destination()) = distance.at(edge.source()) + edge.weight();
+          predecessor.at(edge.destination()) = edge.destination();
+        }
+      }
+    }
+
+    // Check for negative weight cylces
+    for (auto&& edge : edges_) {
+      if (distance.at(edge.source()) + edge.weight() < distance.at(edge.destination())) {
+        std::cerr << "ERROR: graph contains a negative-weight cycle" << std::endl;
+      }
+    }
   }
 
+  Path<T> buildPath(const std::vector<int>& distance, const std::vector<Node<T>*>& predecessor) const {
+    for (size_t i = 0; i < nodes_.size(); i++) {
+      std::cout << "Distance: " << distance.at(i) << " Pred ID_: " << predecessor.at(i)->id() << std::endl;
+    }
+    return Path<T>(true);
+  }
+
+  // O(n*e) n: nodes e: edges
   void buildMinSpanTree(void) {
-    // sort edges
+    // sort edges by weight
     std::sort(edges_.begin(), edges_.end());
 
     // loop through the next smallest edges, adding if it does not create a loop
@@ -331,8 +380,9 @@ class Graph {
       isFullyConnected = false;
   }
 
+  // O(n)
   void visitNode(Node<T>* node, std::vector<Node<T>*>& visitedNodes) {
-    visitedNodes.pushback(node);
+    visitedNodes.push_back(node);
 
     for (size_t i = 0; i < node->numberOfConnections(); i++) {
       if (!inVector(visitedNodes, node->connectionAt(i)).first)
