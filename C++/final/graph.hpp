@@ -294,7 +294,9 @@ class Graph {
     // add connection
     sourceNode->addConnection(destinationNode);
     auto edge = new Edge<T>(sourceNode, destinationNode, weight);
+    auto edge2 = new Edge<T>(destinationNode, sourceNode, weight);
     edges_.push_back(edge);
+    edges_.push_back(edge2);
 
     // build min spanning tree
     buildMinSpanTree();
@@ -317,7 +319,7 @@ class Graph {
     // Sort nodes by their id
     std::sort(nodes_.begin(), nodes_.end());
 
-    std::vector<int> distance;
+    std::vector<double> distance;
     std::vector<Node<T>*> predecessor;
 
     // Run bellman-ford algorithm. Data is stored in distance and predecessor vectors
@@ -337,19 +339,18 @@ class Graph {
 
  private:
   // Private method
-  void bellmanFord(std::vector<int>& distance, std::vector<Node<T>*>& predecessor, Node<T>* source) {
-    std::cout << "got to bellman ford" << std::endl;
+  void bellmanFord(std::vector<double>& distance, std::vector<Node<T>*>& predecessor, Node<T>* source) {
     const size_t size = nodes_.size();
 
     // Initialize
     for (size_t i = 0; i < size; i++) {
       // For every node, the distance is infinity
-      distance.push_back(std::numeric_limits<int>::max());
+      distance.push_back(std::numeric_limits<double>::infinity());
       // For every predecessor, fill with nullObject
       predecessor.push_back(new Node<T>(true));
     }
 
-    std::cout << "initialized vectors" << std::endl;
+    std::cout << "max int is " << std::numeric_limits<int>::max() << std::endl;
 
     // Distance from source to source is 0
     distance.at(source->id()) = 0;
@@ -357,14 +358,20 @@ class Graph {
     // Relax edges
     for (size_t i = 0; i < size; i++) {
       for (auto&& edge : edges_) {
+        // if ( dist[edge.src] + edge.weight < dist[edge.dest])
+        std::cout << "dist[" << edge->source()->id() << "] + edge.weight (" << edge->weight() << ") = " << distance.at(edge->source()->id()) + edge->weight() << std::endl;
+
+        std::cout << "dist[edge.dest] = " << distance.at(edge->destination()->id()) << std::endl
+                  << std::endl;
         if ((distance.at(edge->source()->id()) + edge->weight() < distance.at(edge->destination()->id()))) {
+          // distance[edge.dest] = distance[edge.src] + edge.weight
           distance.at(edge->destination()->id()) = distance.at(edge->source()->id()) + edge->weight();
+
+          // pred[edge.dest] = edge.dest
           predecessor.at(edge->destination()->id()) = edge->destination();
         }
       }
     }
-
-    std::cout << "relaxed edges" << std::endl;
 
     // Check for negative weight cylces
     for (auto&& edge : edges_) {
@@ -372,11 +379,9 @@ class Graph {
         std::cerr << "ERROR: graph contains a negative-weight cycle" << std::endl;
       }
     }
-
-    std::cout << "finished bellman ford" << std::endl;
   }
 
-  Path<T> buildPath(const std::vector<int>& distance, const std::vector<Node<T>*>& predecessor) const {
+  Path<T> buildPath(const std::vector<double>& distance, const std::vector<Node<T>*>& predecessor) const {
     for (size_t i = 0; i < nodes_.size(); i++) {
       std::cout << "Distance: " << distance.at(i) << " Pred ID_: " << predecessor.at(i)->id() << std::endl;
     }
