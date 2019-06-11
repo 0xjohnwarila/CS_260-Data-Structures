@@ -7,10 +7,33 @@
 #include <utility>
 #include <vector>
 
-#include "utils.hpp"
-
 // Graph namespace, has nodes and graphs
 namespace graph {
+
+/*
+ Ok so I have no clue at all whats happening. If this utility is in a seperate file it will get
+ the std::allocator along with the T* in the vecor. But here it works fine...
+
+ ALLRIGHT FINE YOU LIVE HERE NOW
+
+ Bjarne Stroustrup, forgive me for having a random utility function hanging out in my namespace.
+
+ */
+template <class T>
+inline std::pair<bool, int> findInVector(const std::vector<T*>& inputVector, const T* element) {
+  std::pair<bool, int> result;
+
+  auto iter = std::find(inputVector.begin(), inputVector.end(), element);
+
+  if (iter != inputVector.end()) {
+    result.first = true;
+    result.second = std::distance(inputVector.begin(), iter);
+  } else {
+    result.first = false;
+    result.second = -1;
+  }
+  return result;
+}
 
 /*
 Node Class
@@ -30,21 +53,19 @@ class Node {
   T value_;
 
   std::vector<Node*> connections_;
-  std::vector<std::pair<Node*, int>> weightedConnections_;
 
  public:
   Node() : Node(T()) {}
   Node(bool isNull) : isNull_(isNull) {}
-  Node(T value) : value_(value) {}
+  Node(T value) : value_(value) { this->isNull_ = false; }
 
-  void addConnection(Node* connectingNode, int weight, bool originalCall = true) {
+  void addConnection(Node* connectingNode, bool originalCall = true) {
     // add the connection
     connections_.push_back(connectingNode);
-    weightedConnections_.push_back(std::pair<Node*, int>(connectingNode, weight));
 
     // If this is the original call of the method, call addConnection on the connectingNode
     if (originalCall)
-      connectingNode->addConnection(this, weight, false);
+      connectingNode->addConnection(this, false);
   }
 
   void removeConnection(Node* connectingNode, bool originalCall = true) {
@@ -58,7 +79,6 @@ class Node {
 
     if (connection.first) {
       connections_.erase(connection.second);
-      weightedConnections_.erase(connection.second);
     } else {
       return;
     }
@@ -210,6 +230,10 @@ class Path {
     return steps_.at(stepNumber);
   }
 
+  size_t size(void) const {
+    return steps_.size();
+  }
+
   bool isNull(void) const {
     return isNull_;
   }
@@ -249,8 +273,8 @@ class Graph {
       return false;
 
     // checking for clones
-    //if (findInVector(nodes_, inputNode).first)
-    //  return false;
+    if (findInVector(nodes_, inputNode).first)
+      return false;
 
     // adding
     inputNode->setId(nextId++);
@@ -268,7 +292,7 @@ class Graph {
       return false;
 
     // add connection
-    sourceNode->addConnection(destinationNode, weight);
+    sourceNode->addConnection(destinationNode);
     auto edge = new Edge<T>(sourceNode, destinationNode, weight);
     edges_.push_back(edge);
 
@@ -279,16 +303,16 @@ class Graph {
   }
 
   // Path returning methods
-  Path<T> getShortestPath(Node<T>* sourceNode, Node<T>* destinationNode) const {
+  Path<T> getShortestPath(Node<T>* sourceNode, Node<T>* destinationNode) {
     // If there is some error getting the path, return a nullObject
 
     // null checking
     if (sourceNode->isNull() || destinationNode->isNull())
-      return Path(true);
+      return Path<T>(true);
 
     // checking that nodes are in the graph
-    if (!(findInVector(nodes_, sourceNode).first && findInVector(destinationNode).first))
-      return Path(true);
+    if (!(findInVector(nodes_, sourceNode).first && findInVector(nodes_, destinationNode).first))
+      return Path<T>(true);
 
     // Sort nodes by their id
     std::sort(nodes_.begin(), nodes_.end());
@@ -313,15 +337,19 @@ class Graph {
 
  private:
   // Private method
-  void bellmanFord(std::vector<int>& distance, std::vector<Node<T>*>& predecessor, const Node<T>* source) {
+  void bellmanFord(std::vector<int>& distance, std::vector<Node<T>*>& predecessor, Node<T>* source) {
+    std::cout << "got to bellman ford" << std::endl;
     const size_t size = nodes_.size();
+
     // Initialize
-    for (auto&& node : nodes_) {
+    for (size_t i = 0; i < size; i++) {
       // For every node, the distance is infinity
       distance.push_back(std::numeric_limits<int>::max());
       // For every predecessor, fill with nullObject
-      predecessor.push_back(Node<T>(true));
+      predecessor.push_back(new Node<T>(true));
     }
+
+    std::cout << "initialized vectors" << std::endl;
 
     // Distance from source to source is 0
     distance.at(source->id()) = 0;
@@ -329,19 +357,23 @@ class Graph {
     // Relax edges
     for (size_t i = 0; i < size; i++) {
       for (auto&& edge : edges_) {
-        if ((distance.at(edge.source() + edge.weight()) < distance.at(edge.destination()))) {
-          distance.at(edge.destination()) = distance.at(edge.source()) + edge.weight();
-          predecessor.at(edge.destination()) = edge.destination();
+        if ((distance.at(edge->source()->id()) + edge->weight() < distance.at(edge->destination()->id()))) {
+          distance.at(edge->destination()->id()) = distance.at(edge->source()->id()) + edge->weight();
+          predecessor.at(edge->destination()->id()) = edge->destination();
         }
       }
     }
 
+    std::cout << "relaxed edges" << std::endl;
+
     // Check for negative weight cylces
     for (auto&& edge : edges_) {
-      if (distance.at(edge.source()) + edge.weight() < distance.at(edge.destination())) {
+      if (distance.at(edge->source()->id()) + edge->weight() < distance.at(edge->destination()->id())) {
         std::cerr << "ERROR: graph contains a negative-weight cycle" << std::endl;
       }
     }
+
+    std::cout << "finished bellman ford" << std::endl;
   }
 
   Path<T> buildPath(const std::vector<int>& distance, const std::vector<Node<T>*>& predecessor) const {
