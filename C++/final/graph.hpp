@@ -4,7 +4,6 @@
 #include <array>
 #include <iostream>
 #include <limits>
-#include <map>
 #include <utility>
 #include <vector>
 
@@ -63,7 +62,6 @@ class Node {
   void addConnection(Node* connectingNode, bool originalCall = true) {
     // add the connection
     connections_.push_back(connectingNode);
-    numberOfConnections_++;
 
     // If this is the original call of the method, call addConnection on the connectingNode
     if (originalCall)
@@ -258,8 +256,6 @@ class Graph {
   std::vector<Node<T>*> nodes_;
   // Vector of all edges in the graph. edges are a pair of int and pair nodes
   std::vector<Edge<T>*> edges_;
-
-  std::map<std::pair<Node<T>*, Node<T>*>, double> shortestPaths_;
   // Current minimum spanning tree of the graph
   Path<T> minSpanningTree_;
 
@@ -317,8 +313,11 @@ class Graph {
     if (!(findInVector(nodes_, sourceNode).first && findInVector(nodes_, destinationNode).first))
       return 0;
 
-    std::pair<Node<T>*, Node<T>*> path(sourceNode, destinationNode);
-    return shortestPaths_[path];
+    // Sort nodes by their id
+    std::sort(nodes_.begin(), nodes_.end());
+
+    // Run bellman-ford algorithm
+    return bellmanFord(sourceNode, destinationNode);
   }
 
   Path<T> getMinSpanningTree(void) const {
@@ -327,26 +326,10 @@ class Graph {
 
  private:
   // Private method
-
-  void buildShortestPaths(void) {
-    double dist;
-    for (auto&& node : nodes_) {
-      for (auto&& dest : nodes_) {
-        if (!(dest == node)) {
-          // find the distance with bellmanFord
-          dist = bellmanFord(node, dest);
-          // load distance into both the Source-Destination and Destination-Source
-          shortestPaths_[std::pair<Node<T>*, Node<T>*>(node, dest)] = dist;
-          shortestPaths_[std::pair<Node<T>*, Node<T>*>(dest, node)] = dist;
-        }
-      }
-    }
-  }
   double bellmanFord(Node<T>* source, Node<T>* destination) {
     const size_t size = nodes_.size();
     std::vector<double> distance;
     std::vector<Node<T>*> predecessor;
-    std::sort(nodes_.begin(), nodes_.end());
 
     // Initialize
     for (size_t i = 0; i < size; i++) {
@@ -392,6 +375,16 @@ class Graph {
     for (auto&& edge : edges_) {
       if (!minSpanningTree_.loop(edge))
         minSpanningTree_.addStep(edge);
+    }
+  }
+
+  // O(n)
+  void visitNode(Node<T>* node, std::vector<Node<T>*>& visitedNodes) {
+    visitedNodes.push_back(node);
+
+    for (size_t i = 0; i < node->numberOfConnections(); i++) {
+      if (!inVector(visitedNodes, node->connectionAt(i)).first)
+        visitNode(node->connectionsAt(i));
     }
   }
 };
