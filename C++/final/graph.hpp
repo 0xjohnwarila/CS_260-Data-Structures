@@ -304,28 +304,23 @@ class Graph {
     return true;
   }
 
-  // Path returning methods
-  Path<T> getShortestPath(Node<T>* sourceNode, Node<T>* destinationNode) {
+  double getShortestPath(Node<T>* sourceNode, Node<T>* destinationNode) {
     // If there is some error getting the path, return a nullObject
 
     // null checking
     if (sourceNode->isNull() || destinationNode->isNull())
-      return Path<T>(true);
+      return 0;
 
     // checking that nodes are in the graph
     if (!(findInVector(nodes_, sourceNode).first && findInVector(nodes_, destinationNode).first))
-      return Path<T>(true);
+      return 0;
 
     // Sort nodes by their id
     std::sort(nodes_.begin(), nodes_.end());
 
-    std::vector<double> distance;
-    std::vector<Node<T>*> predecessor;
-
     // Run bellman-ford algorithm. Data is stored in distance and predecessor vectors
-    bellmanFord(distance, predecessor, sourceNode);
 
-    return buildPath(distance, predecessor);
+    return bellmanFord(sourceNode, destinationNode);
   }
 
   Path<T> getMinSpanningTree(void) const {
@@ -339,8 +334,10 @@ class Graph {
 
  private:
   // Private method
-  void bellmanFord(std::vector<double>& distance, std::vector<Node<T>*>& predecessor, Node<T>* source) {
+  double bellmanFord(Node<T>* source, Node<T>* destination) {
     const size_t size = nodes_.size();
+    std::vector<double> distance;
+    std::vector<Node<T>*> predecessor;
 
     // Initialize
     for (size_t i = 0; i < size; i++) {
@@ -350,8 +347,6 @@ class Graph {
       predecessor.push_back(new Node<T>(true));
     }
 
-    std::cout << "max int is " << std::numeric_limits<int>::max() << std::endl;
-
     // Distance from source to source is 0
     distance.at(source->id()) = 0;
 
@@ -359,10 +354,6 @@ class Graph {
     for (size_t i = 0; i < size; i++) {
       for (auto&& edge : edges_) {
         // if ( dist[edge.src] + edge.weight < dist[edge.dest])
-        std::cout << "dist[" << edge->source()->id() << "] + edge.weight (" << edge->weight() << ") = " << distance.at(edge->source()->id()) + edge->weight() << std::endl;
-
-        std::cout << "dist[edge.dest] = " << distance.at(edge->destination()->id()) << std::endl
-                  << std::endl;
         if ((distance.at(edge->source()->id()) + edge->weight() < distance.at(edge->destination()->id()))) {
           // distance[edge.dest] = distance[edge.src] + edge.weight
           distance.at(edge->destination()->id()) = distance.at(edge->source()->id()) + edge->weight();
@@ -379,13 +370,8 @@ class Graph {
         std::cerr << "ERROR: graph contains a negative-weight cycle" << std::endl;
       }
     }
-  }
 
-  Path<T> buildPath(const std::vector<double>& distance, const std::vector<Node<T>*>& predecessor) const {
-    for (size_t i = 0; i < nodes_.size(); i++) {
-      std::cout << "Distance: " << distance.at(i) << " Pred ID_: " << predecessor.at(i)->id() << std::endl;
-    }
-    return Path<T>(true);
+    return distance.at(destination->id());
   }
 
   // O(n*e) n: nodes e: edges

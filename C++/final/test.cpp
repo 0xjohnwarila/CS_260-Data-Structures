@@ -23,7 +23,8 @@ bool addTest(void) {
 
   Path<int> minSpanningTree = graph.getMinSpanningTree();
 
-  Path<int> shortPath = graph.getShortestPath(testNode4, testNode2);
+  double shortestPath = graph.getShortestPath(testNode2, testNode4);
+  std::cout << shortestPath << std::endl;
 
   return false;
 }
