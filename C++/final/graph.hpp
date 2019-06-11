@@ -259,12 +259,10 @@ class Graph {
   // Current minimum spanning tree of the graph
   Path<T> minSpanningTree_;
 
-  int nextId;
-
-  bool isFullyConnected_;
+  int nextId_;
 
  public:
-  Graph(void) : nextId(0){};
+  Graph(void) : nextId_(0){};
 
   // Graph building methods; returns true if successfully added, false if not
   bool addNode(Node<T>* inputNode) {
@@ -277,7 +275,7 @@ class Graph {
       return false;
 
     // adding
-    inputNode->setId(nextId++);
+    inputNode->setId(nextId_++);
     nodes_.push_back(inputNode);
     return true;
   }
@@ -318,18 +316,12 @@ class Graph {
     // Sort nodes by their id
     std::sort(nodes_.begin(), nodes_.end());
 
-    // Run bellman-ford algorithm. Data is stored in distance and predecessor vectors
-
+    // Run bellman-ford algorithm
     return bellmanFord(sourceNode, destinationNode);
   }
 
   Path<T> getMinSpanningTree(void) const {
     return minSpanningTree_;
-  }
-
-  // Getter
-  bool isFullyConnected(void) const {
-    return isFullyConnected_;
   }
 
  private:
@@ -384,23 +376,6 @@ class Graph {
       if (!minSpanningTree_.loop(edge))
         minSpanningTree_.addStep(edge);
     }
-  }
-
-  // O(n^2)
-  void fullyConnected(void) const {
-    std::vector<Node<T>*> visitedNodes;
-
-    Node<T>* currentNode = nodes_.at(0);
-
-    for (size_t i = 0; i < currentNode->numberOfConnections(); i++) {
-      if (!inVector(visitedNodes, currentNode->connectionAt(i)))
-        visitNode(currentNode->connectionAt(i));
-    }
-
-    if (std::is_permutation(visitedNodes.begin(), visitedNodes.end(), nodes_.begin()))
-      isFullyConnected = true;
-    else
-      isFullyConnected = false;
   }
 
   // O(n)
