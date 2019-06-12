@@ -7,6 +7,16 @@
 #include <utility>
 #include <vector>
 
+/*
+Future plans include making the graph smart and dynamic, make it change itself when it notices a
+certain pattern of usage or data.
+
+Many of the methods here are O(e*n) e: edges n: nodes
+or O(n^2)
+
+Optimized for accessing minimum spanning trees
+*/
+
 // Graph namespace, has nodes and graphs
 namespace graph {
 
@@ -288,6 +298,7 @@ class Graph {
   Graph(void) : nextId_(0){};
 
   // Graph building methods; returns true if successfully added, false if not
+  // O(n) for checking clones
   bool addNode(Node<T>* inputNode) {
     // null checking
     if (inputNode->isNull())
@@ -303,6 +314,7 @@ class Graph {
     return true;
   }
 
+  // O(n^2) or O(n*e)
   bool addPath(Node<T>* sourceNode, Node<T>* destinationNode, int weight) {
     // null checking
     if (sourceNode->isNull() || destinationNode->isNull())
@@ -315,9 +327,7 @@ class Graph {
     // add connection
     sourceNode->addConnection(destinationNode);
     auto edge = new Edge<T>(sourceNode, destinationNode, weight);
-    auto edge2 = new Edge<T>(destinationNode, sourceNode, weight);
     edges_.push_back(edge);
-    //edges_.push_back(edge2);
 
     // build min spanning tree
     buildMinSpanTree();
@@ -325,6 +335,9 @@ class Graph {
     return true;
   }
 
+  // O(e*n)
+  // I was using a map to store all the shortest paths, but was running into some strange template
+  // issues that made it more complicated than expected. In future versions this will be fixed
   double getShortestPath(Node<T>* sourceNode, Node<T>* destinationNode) {
     // If there is some error getting the path, return a nullObject
 
@@ -343,12 +356,14 @@ class Graph {
     return bellmanFord(sourceNode, destinationNode);
   }
 
+  // O(n)
   Path<T> getMinSpanningTree(void) const {
     return minSpanningTree_;
   }
 
  private:
   // Private method
+  // O(e*n)
   double bellmanFord(Node<T>* source, Node<T>* destination) {
     const size_t size = nodes_.size();
     std::vector<double> distance;
@@ -403,16 +418,6 @@ class Graph {
     }
 
     minSpanningTree_.sort();
-  }
-
-  // O(n)
-  void visitNode(Node<T>* node, std::vector<Node<T>*>& visitedNodes) {
-    visitedNodes.push_back(node);
-
-    for (size_t i = 0; i < node->numberOfConnections(); i++) {
-      if (!inVector(visitedNodes, node->connectionAt(i)).first)
-        visitNode(node->connectionsAt(i));
-    }
   }
 };
 

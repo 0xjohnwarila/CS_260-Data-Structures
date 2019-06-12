@@ -78,17 +78,21 @@ bool minSpanTreeTest(void) {
   Path<int> minSpanningTree = graph.getMinSpanningTree();
   Path<int> expectedTree = Path<int>();
 
-  for (size_t i = 0; i < minSpanningTree.size(); i++) {
-    std::cout << minSpanningTree.step(i)->source()->id();
-    std::cout << " " << minSpanningTree.step(i)->destination()->id() << std::endl;
-  }
+  expectedTree.addStep(new Edge<int>(testNode, testNode2, 4));
+  expectedTree.addStep(new Edge<int>(testNode2, testNode3, 6));
+  expectedTree.addStep(new Edge<int>(testNode3, testNode4, 5));
 
-  return false;
+  if (minSpanningTree.size() != expectedTree.size())
+    return false;
+
+  for (size_t i = 0; i < expectedTree.size(); i++) {
+    if (expectedTree.step(i)->source()->id() != minSpanningTree.step(i)->source()->id())
+      return false;
+  }
+  return true;
 }
 
 bool testSuite(void) {
   // Call all testing methods and return if they pass
-
-  // For now return false as first step (TDD)
   return addTest() && shortPathTest() && minSpanTreeTest();
 }
