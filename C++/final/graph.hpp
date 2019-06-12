@@ -62,6 +62,7 @@ class Node {
   void addConnection(Node* connectingNode, bool originalCall = true) {
     // add the connection
     connections_.push_back(connectingNode);
+    numberOfConnections_++;
 
     // If this is the original call of the method, call addConnection on the connectingNode
     if (originalCall)
@@ -125,12 +126,12 @@ class Node {
   }
 
   // Operator Overloading
-  bool operator>(const Node& otherNode) {
-    return id_ > otherNode.id();
+  bool operator>(const Node* otherNode) {
+    return id_ > otherNode->id();
   }
 
-  bool operator<(const Node& otherNode) {
-    return id_ < otherNode.id();
+  bool operator<(const Node* otherNode) {
+    return id_ < otherNode->id();
   }
 };
 
@@ -155,7 +156,7 @@ class Edge {
   Edge(Node<T>* source, Node<T>* destination, int weight) : source_(source), destination_(destination), weight_(weight) {}
 
   bool isConnected(Edge* otherEdge) {
-    return (source_->isConnected(otherEdge->source()) || destination_->isConnected(otherEdge->destination()));
+    return (source_ == otherEdge->source() || destination_ == otherEdge->destination());
   }
 
   // Getters
@@ -172,12 +173,26 @@ class Edge {
   }
 
   // Operator Overloading
-  bool operator>(const Edge& otherEdge) {
-    return weight_ > otherEdge.weight();
+  bool operator>(const Edge* otherEdge) {
+    return weight_ > otherEdge->weight();
   }
 
-  bool operator<(const Edge& otherEdge) {
-    return weight_ < otherEdge.weight();
+  bool operator<(const Edge* otherEdge) {
+    return weight_ < otherEdge->weight();
+  }
+};
+
+template <class T>
+struct less_than_key_weight {
+  inline bool operator()(const Edge<T>* edge1, const Edge<T>* edge2) {
+    return (edge1->weight() < edge2->weight());
+  }
+};
+
+template <class T>
+struct less_than_key_source {
+  inline bool operator()(const Edge<T>* edge1, const Edge<T>* edge2) {
+    return (edge1->source()->id() < edge2->source()->id());
   }
 };
 
@@ -208,6 +223,14 @@ class Path {
     steps_.push_back(edge);
   }
 
+  void clear(void) {
+    steps_.clear();
+  }
+
+  void sort(void) {
+    std::sort(steps_.begin(), steps_.end(), less_than_key_source<T>());
+  }
+
   bool loop(Edge<T>* edge) const {
     for (auto&& currentEdge : steps_) {
       if (edge->isConnected(currentEdge))
@@ -226,7 +249,7 @@ class Path {
     return destination_;
   }
 
-  std::pair<Node<T>*, Node<T>*> step(size_t stepNumber) const {
+  Edge<T>* step(size_t stepNumber) const {
     return steps_.at(stepNumber);
   }
 
@@ -294,7 +317,7 @@ class Graph {
     auto edge = new Edge<T>(sourceNode, destinationNode, weight);
     auto edge2 = new Edge<T>(destinationNode, sourceNode, weight);
     edges_.push_back(edge);
-    edges_.push_back(edge2);
+    //edges_.push_back(edge2);
 
     // build min spanning tree
     buildMinSpanTree();
@@ -368,14 +391,18 @@ class Graph {
 
   // O(n*e) n: nodes e: edges
   void buildMinSpanTree(void) {
+    minSpanningTree_.clear();
+
     // sort edges by weight
-    std::sort(edges_.begin(), edges_.end());
+    std::sort(edges_.begin(), edges_.end(), less_than_key_weight<T>());
 
     // loop through the next smallest edges, adding if it does not create a loop
     for (auto&& edge : edges_) {
       if (!minSpanningTree_.loop(edge))
         minSpanningTree_.addStep(edge);
     }
+
+    minSpanningTree_.sort();
   }
 
   // O(n)
